@@ -40,16 +40,15 @@
 
 <br>
 
-| <div align="center">BIBLIOTECAS       | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                    |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| <div align="center">Bcrypt            | <div align="center">Biblioteca de criptografia                                                     | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)             |
-| <div align="center">Jsonwebtoken      | <div align="center">Implementação de tokens JWT                                                    | <div align="center">[ver](https://www.npmjs.com/package/jsonwebtoken)       |
-| <div align="center">Knex              | <div align="center">Biblioteca que funciona como um query builder para bancos de dados relacionais | <div align="center">[ver](https://knexjs.org/)                              |
-| <div align="center">Moment            | <div align="center">Utilizada para manipulação, formatação e análise de datas e horários           | <div align="center">[ver](https://www.npmjs.com/package/moment)             |
-| <div align="center">Nodemailer        | <div align="center">Permite enviar e-mails de forma fácil e flexível                               | <div align="center">[ver](https://www.npmjs.com/package/nodemailer)         |
-| <div align="center">Remove-accents    | <div align="center">Cliente PostgreSQL para Node.js                                                | <div align="center"> [ver](https://www.npmjs.com/package/remove-accents)    |
-| <div align="center">Uuid              | <div align="center">Identificador único universalmente                                             | <div align="center"> [ver](https://www.npmjs.com/package/uuid)              |
-|                                       |
+| <div align="center">BIBLIOTECAS    | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                 |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| <div align="center">Bcrypt         | <div align="center">Biblioteca de criptografia                                                     | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)          |
+| <div align="center">Jsonwebtoken   | <div align="center">Implementação de tokens JWT                                                    | <div align="center">[ver](https://www.npmjs.com/package/jsonwebtoken)    |
+| <div align="center">Knex           | <div align="center">Biblioteca que funciona como um query builder para bancos de dados relacionais | <div align="center">[ver](https://knexjs.org/)                           |
+| <div align="center">Moment         | <div align="center">Utilizada para manipulação, formatação e análise de datas e horários           | <div align="center">[ver](https://www.npmjs.com/package/moment)          |
+| <div align="center">Nodemailer     | <div align="center">Permite enviar e-mails de forma fácil e flexível                               | <div align="center">[ver](https://www.npmjs.com/package/nodemailer)      |
+| <div align="center">Remove-accents | <div align="center">Cliente PostgreSQL para Node.js                                                | <div align="center"> [ver](https://www.npmjs.com/package/remove-accents) |
+| <div align="center">Uuid           | <div align="center">Identificador único universalmente                                             | <div align="center"> [ver](https://www.npmjs.com/package/uuid)           |
 
 <br><br>
 
