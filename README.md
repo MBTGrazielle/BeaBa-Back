@@ -30,21 +30,26 @@
 
 <br>
 
-| <div align="center">PACOTES           | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                    |
+| <div align="center">PACOTES           | <div align="center">DESCRIÇÃO                                            | <div align="center">LINK                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| <div align="center">Aws-sdk/client-s3 | <div align="center">Interage com o serviço Amazon S3 - Upload de imagens | <div align="center">[ver](https://www.npmjs.com/package/@aws-sdk/client-s3) |
+| <div align="center">Cors              | <div align="center">Middleware para habilitar CORS                       | <div align="center">[ver](https://www.npmjs.com/package/cors)               |
+| <div align="center">Dotenv            | <div align="center">Carregamento de variáveis de ambiente                | <div align="center">[ver](https://www.npmjs.com/package/dotenv)             |
+| <div align="center">Multer            | <div align="center">Middleware para upload de arquivos                   | <div align="center"> [ver](https://www.npmjs.com/package/multer)            |
+| <div align="center">Nodemon           | <div align="center">Monitor para reiniciar o servidor                    | <div align="center">[ver](https://www.npmjs.com/package/nodemon)            |
+
+<br>
+
+| <div align="center">BIBLIOTECAS       | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                    |
 | ------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| <div align="center">Aws-sdk/client-s3 | <div align="center">Interage com o serviço Amazon S3 - Upload de imagens                           | <div align="center">[ver](https://www.npmjs.com/package/@aws-sdk/client-s3) |
 | <div align="center">Bcrypt            | <div align="center">Biblioteca de criptografia                                                     | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)             |
-| <div align="center">Cors              | <div align="center">Middleware para habilitar CORS                                                 | <div align="center">[ver](https://www.npmjs.com/package/cors)               |
-| <div align="center">Dotenv            | <div align="center">Carregamento de variáveis de ambiente                                          | <div align="center">[ver](https://www.npmjs.com/package/dotenv)             |
-| <div align="center">Express           | <div align="center">Framework web para Node.js                                                     | <div align="center">[ver](https://expressjs.com/pt-br/)                     |
 | <div align="center">Jsonwebtoken      | <div align="center">Implementação de tokens JWT                                                    | <div align="center">[ver](https://www.npmjs.com/package/jsonwebtoken)       |
 | <div align="center">Knex              | <div align="center">Biblioteca que funciona como um query builder para bancos de dados relacionais | <div align="center">[ver](https://knexjs.org/)                              |
 | <div align="center">Moment            | <div align="center">Utilizada para manipulação, formatação e análise de datas e horários           | <div align="center">[ver](https://www.npmjs.com/package/moment)             |
-| <div align="center">Multer            | <div align="center">Middleware para upload de arquivos                                             | <div align="center"> [ver](https://www.npmjs.com/package/multer)            |
 | <div align="center">Nodemailer        | <div align="center">Permite enviar e-mails de forma fácil e flexível                               | <div align="center">[ver](https://www.npmjs.com/package/nodemailer)         |
-| <div align="center">Nodemon           | <div align="center">Monitor para reiniciar o servidor                                              | <div align="center">[ver](https://www.npmjs.com/package/nodemon)            |
 | <div align="center">Remove-accents    | <div align="center">Cliente PostgreSQL para Node.js                                                | <div align="center"> [ver](https://www.npmjs.com/package/remove-accents)    |
 | <div align="center">Uuid              | <div align="center">Identificador único universalmente                                             | <div align="center"> [ver](https://www.npmjs.com/package/uuid)              |
+|                                       |
 
 <br><br>
 
