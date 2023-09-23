@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRETADM = process.env.SECRETADM;
 const SECRETCAD = process.env.SECRETCAD;
-const removeAccents = require("remove-accents");
 
 const { awsConfig } = require("../../../credenciaisAWS/credenciasAWS");
 const {
