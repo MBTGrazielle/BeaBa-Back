@@ -2,7 +2,8 @@ require("dotenv").config();
 const knex = require("../../db/conexao");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const SECRET = process.env.SECRET;
+const SECRETADM = process.env.SECRETADM;
+const SECRETCAD = process.env.SECRETCAD;
 const removeAccents = require("remove-accents");
 
 const { awsConfig } = require("../../../credenciaisAWS/credenciasAWS");
@@ -229,34 +230,70 @@ const login = async (req, res) => {
       });
     }
 
-    const validPassword = bcrypt.compareSync(senha, usuario.senha);
+    if(usuario.tipo_acesso === 'ADM'){
+      const validPassword = bcrypt.compareSync(senha, usuario.senha);
 
-    if (!validPassword) {
-      return res.status(401).send({
-        mensagem: "Dados inválidos",
-        status: 401,
+      if (!validPassword) {
+        return res.status(401).send({
+          mensagem: "Dados inválidos",
+          status: 401,
+        });
+      }
+  
+      const token = jwt.sign({ email: usuario.email }, SECRETADM);
+  
+      res.status(200).send({
+        mensagem: "Login efetuado com sucesso!",
+        usuario: {
+          id: usuario.id_usuario,
+          nome: usuario.nome_usuario,
+          matricula: usuario.matricula,
+          area: usuario.area,
+          email: usuario.email,
+          tipo_acesso: usuario.tipo_acesso,
+          nome_area: usuario.nome_area,
+          cargo: usuario.cargo,
+          squad: usuario.squad,
+          equipe: usuario.equipe,
+        },
+        token,
+        status: 200,
+      });
+    }else if (usuario.tipo_acesso === 'CAD'){
+      const validPassword = bcrypt.compareSync(senha, usuario.senha);
+
+      if (!validPassword) {
+        return res.status(401).send({
+          mensagem: "Dados inválidos",
+          status: 401,
+        });
+      }
+  
+      const token = jwt.sign({ email: usuario.email }, SECRETCAD);
+  
+      res.status(200).send({
+        mensagem: "Login efetuado com sucesso!",
+        usuario: {
+          id: usuario.id_usuario,
+          nome: usuario.nome_usuario,
+          matricula: usuario.matricula,
+          area: usuario.area,
+          email: usuario.email,
+          tipo_acesso: usuario.tipo_acesso,
+          nome_area: usuario.nome_area,
+          cargo: usuario.cargo,
+          squad: usuario.squad,
+          equipe: usuario.equipe,
+        },
+        token,
+        status: 200,
+      });
+    }else{
+      res.status(403).send({
+        mensagem: "Você não tem permissão para acessar o sistema.",
+        status: 403,
       });
     }
-
-    const token = jwt.sign({ email: usuario.email }, SECRET);
-
-    res.status(200).send({
-      mensagem: "Login efetuado com sucesso!",
-      usuario: {
-        id: usuario.id_usuario,
-        nome: usuario.nome_usuario,
-        matricula: usuario.matricula,
-        area: usuario.area,
-        email: usuario.email,
-        tipo_acesso: usuario.tipo_acesso,
-        nome_area: usuario.nome_area,
-        cargo: usuario.cargo,
-        squad: usuario.squad,
-        equipe: usuario.equipe,
-      },
-      token,
-      status: 200,
-    });
   } catch (err) {
     res.status(500).json({
       mensagem: err.message,
