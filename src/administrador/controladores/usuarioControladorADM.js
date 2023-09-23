@@ -118,7 +118,7 @@ const cadastrarUsuarios = async (req, res) => {
   if (imagem_perfil) {
     const nomeImagem = uuidv4();
 
-    const caminhoImagem = `${nome_area}/${squad}/img-perfil${nomeImagem}.${imagem_perfil.originalname
+    const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
       .split(".")
       .pop()}`;
 
@@ -324,7 +324,7 @@ const atualizarUsuarios = async (req, res) => {
 
       if (usuario.imagem_perfil) {
         const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
-        const caminhoImagemAntiga = `${nome_area}/${squad}/${nomeImagemAntiga}`;
+        const caminhoImagemAntiga = `${nome_area}/${squad}/img-perfil/${nomeImagemAntiga}`;
 
         const params = {
           Bucket: process.env.AWS_BUCKET_NAME,
@@ -335,7 +335,7 @@ const atualizarUsuarios = async (req, res) => {
       }
 
       const nomeImagem = uuidv4();
-      const caminhoImagem = `${nome_area}/${squad}/img-perfil${nomeImagem}.${imagem_perfil.originalname
+      const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
         .split(".")
         .pop()}`;
       const params = {
@@ -401,7 +401,7 @@ const deletarUsuarios = async (req, res) => {
       const nomeImagem = usuario.imagem_perfil.split("/").pop();
 
       // Construir o caminho correto para a imagem no S3
-      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/${nomeImagem}`;
+      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/img-perfil/${nomeImagem}`;
 
       // Configurar os parâmetros de exclusão no S3
       const params = {
@@ -447,7 +447,7 @@ const deletarImagemPerfil = async (req, res) => {
       const nomeImagem = usuario.imagem_perfil.split("/").pop();
 
       // Construir o caminho correto para a imagem no S3
-      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/${nomeImagem}`;
+      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/img-perfil/${nomeImagem}`;
 
       // Configurar os parâmetros de exclusão no S3
       const params = {
