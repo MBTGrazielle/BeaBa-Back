@@ -47,8 +47,15 @@
 | <div align="center">Knex           | <div align="center">Biblioteca que funciona como um query builder para bancos de dados relacionais | <div align="center">[ver](https://knexjs.org/)                           |
 | <div align="center">Moment         | <div align="center">Utilizada para manipulação, formatação e análise de datas e horários           | <div align="center">[ver](https://www.npmjs.com/package/moment)          |
 | <div align="center">Nodemailer     | <div align="center">Permite enviar e-mails de forma fácil e flexível                               | <div align="center">[ver](https://www.npmjs.com/package/nodemailer)      |
+| <div align="center">Pandas         | <div align="center">Manipulação e análise de dados tabulares                                       | <div align="center">[ver](https://pandas.pydata.org/docs/)               |
+| <div align="center">Psycopg2       | <div align="center">Conectar e interagir com bancos de dados PostgreSQL                            | <div align="center">[ver](https://pypi.org/project/psycopg2/)            |
 | <div align="center">Remove-accents | <div align="center">Cliente PostgreSQL para Node.js                                                | <div align="center"> [ver](https://www.npmjs.com/package/remove-accents) |
 | <div align="center">Uuid           | <div align="center">Identificador único universalmente                                             | <div align="center"> [ver](https://www.npmjs.com/package/uuid)           |
+
+<br>
+| <div align="center">MÉTODOS    | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                 |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| <div align="center">child_process         | <div align="center">Módulo integrado para executar scripts em Python                                                   | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)          |
 
 <br><br>
 
