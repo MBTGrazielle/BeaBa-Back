@@ -56,7 +56,6 @@
 | <div align="center">BIBLIOTECAS    | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                 |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | <div align="center">Child_process         | <div align="center">Módulo integrado para executar scripts em Python                                                     | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)          |
-|
 
 <br><br>
 
