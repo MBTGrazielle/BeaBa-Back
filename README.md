@@ -58,10 +58,6 @@
 | ------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
 | <div align="center">Aws-sdk/client-s3 | <div align="center">Interage com o serviço Amazon S3 - Upload de imagens | <div align="center">[ver](https://www.npmjs.com/package/@aws-sdk/client-s3) |
 | <div align="center">Cors              | <div align="center">Middleware para habilitar CORS                       | <div align="center">[ver](https://www.npmjs.com/package/cors)               |
-| <div align="center">Dotenv            | <div align="center">Carregamento de variáveis de ambiente                | <div align="center">[ver](https://www.npmjs.com/package/dotenv)             |
-| <div align="center">Multer            | <div align="center">Middleware para upload de arquivos                   | <div align="center"> [ver](https://www.npmjs.com/package/multer)            |
-| <div align="center">Nodemon           | <div align="center">Monitor para reiniciar o servidor                    | <div align="center">[ver](https://www.npmjs.com/package/nodemon)            |
-
 
 ## ARQUITETURA MVC
 
