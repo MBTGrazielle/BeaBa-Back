@@ -56,7 +56,7 @@
 | <div align="center">BIBLIOTECAS    | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                 |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | <div align="center">Child_process         | <div align="center">Módulo integrado para executar scripts em Python                                                     | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)          |
-
+| <div align="center">Uuid           | <div align="center">Identificador único universalmente                                             | <div align="center"> [ver](https://www.npmjs.com/package/uuid)           |
 <br><br>
 
 ## ARQUITETURA MVC
