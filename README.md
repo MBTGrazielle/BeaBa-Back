@@ -25,7 +25,6 @@
 | <div align="center">JavaScript  | <div align="center">Linguagem de programação            | <div align="center">[ver](https://www.javascript.com/)                       |
 | <div align="center">Node.js     | <div align="center">Execução JavaScript no servidor     | <div align="center"> [ver](https://nodejs.org/en/)                           |
 | <div align="center">Python      | <div align="center">Linguagem de programação            | <div align="center">[ver](https://www.python.org/)                           |
-| <div align="center">Postman     | <div align="center">Plataforma para teste de APIs       | <div align="center">[ver](https://www.postman.com/)                          |
 | <div align="center">VScode      | <div align="center">Editor de código fonte              | <div align="center">[ver](https://code.visualstudio.com/)                    |
 
 <br>
