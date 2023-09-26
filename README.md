@@ -55,7 +55,7 @@
 <br>
 | <div align="center">MÉTODOS    | <div align="center">DESCRIÇÃO                                                                      | <div align="center">LINK                                                 |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| <div align="center">child_process         | <div align="center">Módulo integrado para executar scripts em Python                                                   | <div align="center">[ver](https://www.npmjs.com/package/bcrypt)          |
+| <div align="center">child_process         | <div align="center">Módulo integrado para executar scripts em Python                                                   |
 
 <br><br>
 
