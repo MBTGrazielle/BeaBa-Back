@@ -54,10 +54,9 @@
 
 <br><br>
 
-| <div align="center">PACOTES           | <div align="center">DESCRIÇÃO                                            | <div align="center">LINK                                                    |
-| ------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| <div align="center">Aws-sdk/client-s3 | <div align="center">Interage com o serviço Amazon S3 - Upload de imagens | <div align="center">[ver](https://www.npmjs.com/package/@aws-sdk/client-s3) |
-| <div align="center">Cors              | <div align="center">Middleware para habilitar CORS                       | <div align="center">[ver](https://www.npmjs.com/package/cors)               |
+| <div align="center">PACOTES       | <div align="center">DESCRIÇÃO                                                                                 | <div align="center">LINK                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| <div align="center">Child_process | <div align="center">Permite criar processos filhos para executar comandos externos (executa scripts em Python | <div align="center">[ver](https://nodejs.org/api/child_process.html) |
 
 ## ARQUITETURA MVC
 
