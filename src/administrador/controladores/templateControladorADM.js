@@ -22,9 +22,7 @@ const cadastrarTemplates = async (req, res) => {
   const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
   const emailObj = req.params;
   const email = emailObj.email;
-  console.log(email);
-
-  console.log(email);
+  
   const { nome_template, objetivo_template, extensao_template } = req.body;
 
   if (!nome_template || nome_template.length < 3) {
@@ -115,95 +113,37 @@ const cadastrarTemplates = async (req, res) => {
 };
 
 const cadastrarCampos = async (req, res) => {
-  const id_usuarioObj = req.params;
-  const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
-  const emailObj = req.params;
-  const email = emailObj.email;
-  console.log(email);
+  const id_templateObj = req.params;
+  const id_template = parseInt(id_templateObj.id_template, 10);
 
-  console.log(email);
-  const { nome_template, objetivo_template, extensao_template } = req.body;
+  const { nome_campo, tipo_dado_campo } = req.body;
 
-  if (!nome_template || nome_template.length < 3) {
+  if (!nome_campo || nome_campo.length < 3) {
     return res.status(400).json({
-      mensagem: "O nome do template é obrigatório",
+      mensagem: "O nome do campo é obrigatório",
     });
   }
 
-  if (!objetivo_template || objetivo_template.length < 4) {
+  if (!tipo_dado_campo) {
     return res.status(400).json({
-      mensagem: "O objetivo do template é obrigatório",
-    });
-  }
-
-  if (!extensao_template) {
-    return res.status(400).json({
-      mensagem: "A extensão do template é obrigatória",
+      mensagem: "O tipo de dado do campo é obrigatório",
     });
   }
 
   try {
-    const usuario = await knex("BeaBa.usuarios").where({ id_usuario });
 
-    let status_template;
-    let disponibilidade_template;
-
-    if (usuario[0].tipo_acesso === "ADM") {
-      status_template = "ativo";
-      disponibilidade_template = true;
-    } else if (usuario[0].tipo_acesso === "CAD") {
-      status_template = "pendente";
-      disponibilidade_template = false;
-    }
-
-    const data_criacao_template = moment().format("YYYY-MM-DD HH:mm:ss");
-
-    const template = await knex("BeaBa.templates")
+    const campo = await knex("BeaBa.campos")
       .insert({
-        referencia_usuario: id_usuario,
-        data_criacao_template,
-        nome_template,
-        objetivo_template,
-        extensao_template,
-        status_template,
-        disponibilidade_template,
+        referencia_template: id_template,
+        nome_campo,
+        tipo_dado_campo,
       })
       .returning("*");
 
-    if (template) {
-      const emailHTML = `
-        <html>
-          <head>
-            <style>
-              img {
-                border-radius: 50%;
-                width: 15%;
-              }
-
-              strong {
-                color: red;
-              }
-            </style>
-          </head>
-          <body>
-            <h3>Seu arquivo ${nome_template}.${extensao_template} foi cadastrado com sucesso.</h3>
-            <div class='logotipo'>
-              <img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49">
-            </div>
-          </body>
-        </html>
-      `;
-      await transporter.sendMail({
-        from: process.env.SMTP_USER,
-        to: email,
-        subject: "Confirmação de cadastro de Template",
-        html: emailHTML,
-      });
-      res.status(201).json({
-        mensagem: "Cadastro realizado com sucesso!",
-        status: 201,
-      });
-    }
+    res.status(201).json({
+      mensagem: "Cadastro realizado com sucesso!",
+      status: 201,
+    });
   } catch (err) {
     res.status(500).json({
       mensagem: err.message,
