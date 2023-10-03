@@ -21,16 +21,42 @@ const {
   gerarSenhaAleatoria,
 } = require("../../nodemailer/nodemailer");
 
+const meuPerfil = async (req, res) => {
+  const matricula = req.params;
+
+  try {
+    const usuario = await knex("BeaBa.usuarios").where(matricula);
+
+    if (usuario.length > 0) {
+      return res.status(200).json({
+        mensagem: `Encontramos ${usuario.length} resultado${
+          usuario.length === 1 ? "" : "s"
+        }.`,
+        usuario,
+        status: 200,
+      });
+    } else {
+      return res.status(404).json({
+        mensagem: "Nenhum resultado foi encontrado para a sua busca.",
+        status: 404,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+    });
+  }
+};
 
 const atualizarUsuarios = async (req, res) => {
-  const { id_usuarios } = req.params;
+  const { id_usuario } = req.params;
   let {
     nome_usuario,
     senha,
   } = req.body;
 
   try {
-    const usuarios = await knex("BeaBa.usuarios").where({ id_usuarios });
+    const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
 
     if (usuarios.length === 0) {
       return res.status(404).send({
@@ -73,7 +99,7 @@ const atualizarUsuarios = async (req, res) => {
 
       const urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
 
-      await knex("BeaBa.usuarios").where({ id_usuarios }).update({
+      await knex("BeaBa.usuarios").where({ id_usuario }).update({
         imagem_perfil: urlImagem,
         nome_usuario,
         senha: usuario.senha,
@@ -97,10 +123,10 @@ const atualizarUsuarios = async (req, res) => {
 };
 
 const deletarImagemPerfil = async (req, res) => {
-  const { id_usuarios } = req.params;
+  const { id_usuario } = req.params;
 
   try {
-    const usuario = await knex("BeaBa.usuarios").where({ id_usuarios }).first();
+    const usuario = await knex("BeaBa.usuarios").where({ id_usuario }).first();
 
     if (!usuario) {
       return res.status(404).send({
@@ -128,7 +154,7 @@ const deletarImagemPerfil = async (req, res) => {
 
       // Atualize o campo imagem_perfil para null no banco de dados
       await knex("BeaBa.usuarios")
-        .where({ id_usuarios })
+        .where({ id_usuario })
         .update({ imagem_perfil: null });
 
       res.status(200).send({
@@ -219,6 +245,7 @@ const esqueceuSenha = async (req, res) => {
 };
 
 module.exports = {
+  meuPerfil,
   atualizarUsuarios,
   deletarImagemPerfil,
   esqueceuSenha,

@@ -5,7 +5,6 @@ const multer = require('multer');
 
 const {
   cadastrarUsuarios,
-  login,
   buscarUsuarios,
   atualizarUsuarios,
   deletarUsuarios,
@@ -19,10 +18,9 @@ const rota = Router();
 
 rota.get('/adm/buscarUsuarios/:matricula',checkAuth , buscarUsuarios);
 rota.post('/adm/cadastrar',upload.single('imagem_perfil'), cadastrarUsuarios);
-rota.post('/login', login);
 rota.post('/adm/esqueceuSenha', esqueceuSenha);
-rota.patch('/adm/atualizar/:id_usuarios',upload.single('imagem_perfil'), atualizarUsuarios);
-rota.delete('/adm/deletar/:id_usuarios',checkAuth, deletarUsuarios);
-rota.delete('/adm/deletarImagem/:id_usuarios', deletarImagemPerfil);
+rota.patch('/adm/atualizar/:id_usuario',upload.single('imagem_perfil'), atualizarUsuarios);
+rota.delete('/adm/deletar/:id_usuario',checkAuth, deletarUsuarios);
+rota.delete('/adm/deletarImagem/:id_usuario', deletarImagemPerfil);
 
 module.exports = rota;
