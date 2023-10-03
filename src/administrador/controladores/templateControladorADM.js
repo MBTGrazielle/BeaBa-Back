@@ -22,7 +22,7 @@ const cadastrarTemplates = async (req, res) => {
   const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
   const emailObj = req.params;
   const email = emailObj.email;
-  
+
   const { nome_template, objetivo_template, extensao_template } = req.body;
 
   if (!nome_template || nome_template.length < 3) {
@@ -131,7 +131,6 @@ const cadastrarCampos = async (req, res) => {
   }
 
   try {
-
     const campo = await knex("BeaBa.campos")
       .insert({
         referencia_template: id_template,
@@ -151,166 +150,21 @@ const cadastrarCampos = async (req, res) => {
   }
 };
 
-const buscarUsuarios = async (req, res) => {
-  const matricula = req.params;
+const inativarTemplate = async (req, res) => {
+  const id_templateObj = req.params;
+  const id_template = parseInt(id_templateObj.id_template, 10);
+  const referencia_template = id_template;
 
   try {
-    const usuario = await knex("BeaBa.usuarios").where(matricula);
+    const template = await knex("BeaBa.templates").where({ id_template }).update({
+      status_template:'inativo',
+      disponibilidade_template:false
+    });
 
-    if (usuario.length > 0) {
-      return res.status(200).json({
-        mensagem: `Encontramos ${usuario.length} resultado${
-          usuario.length === 1 ? "" : "s"
-        }.`,
-        usuario,
-        status: 200,
-      });
-    } else {
-      return res.status(404).json({
-        mensagem: "Nenhum resultado foi encontrado para a sua busca.",
-        status: 404,
-      });
-    }
+    res.status(200).json({ mensagem: "Template inativado com sucesso",status:200 });
   } catch (error) {
     res.status(500).json({
       mensagem: error.message,
-    });
-  }
-};
-
-const atualizarUsuarios = async (req, res) => {
-  const { id_usuario } = req.params;
-  let {
-    nome_usuario,
-    email,
-    tipo_acesso,
-    nome_area,
-    cargo,
-    squad,
-    equipe,
-    senha,
-  } = req.body;
-
-  try {
-    const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
-
-    if (usuarios.length === 0) {
-      return res.status(404).send({
-        mensagem: "Usuário não encontrado",
-        status: 404,
-      });
-    }
-
-    const usuario = usuarios[0];
-    usuario.senha = senha ? bcrypt.hashSync(senha, 10) : usuario.senha;
-
-    const s3 = new S3Client(); // Criar uma instância do cliente S3
-
-    if (req.file) {
-      const imagem_perfil = req.file;
-
-      if (usuario.imagem_perfil) {
-        const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
-        const caminhoImagemAntiga = `${nome_area}/${squad}/img-perfil/${nomeImagemAntiga}`;
-
-        const params = {
-          Bucket: process.env.AWS_BUCKET_NAME,
-          Key: caminhoImagemAntiga,
-        };
-
-        await s3.send(new DeleteObjectCommand(params)); // Excluir a imagem anterior do S3
-      }
-
-      const nomeImagem = uuidv4();
-      const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
-        .split(".")
-        .pop()}`;
-      const params = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: caminhoImagem,
-        Body: imagem_perfil.buffer,
-      };
-
-      await s3.send(new PutObjectCommand(params)); // Enviar a nova imagem para o S3
-
-      const urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
-
-      await knex("BeaBa.usuarios").where({ id_usuario }).update({
-        imagem_perfil: urlImagem,
-        nome_usuario,
-        email,
-        tipo_acesso,
-        nome_area,
-        cargo,
-        squad,
-        equipe,
-        senha: usuario.senha,
-      });
-    }
-
-    res.status(200).send({
-      mensagem: "Usuário atualizado com sucesso!",
-      usuario: {
-        imagem_perfil: usuario.imagem_perfil,
-        nome_usuario: usuario.nome_usuario,
-        email: usuario.email,
-        tipo_acesso: usuario.tipo_acesso,
-        nome_area: usuario.nome_area,
-        cargo: usuario.cargo,
-        squad: usuario.squad,
-        equipe: usuario.equipe,
-      },
-      status: 200,
-    });
-  } catch (error) {
-    res.status(500).json({
-      mensagem: error.message,
-      status: 500,
-    });
-  }
-};
-
-const deletarUsuarios = async (req, res) => {
-  const { id_usuario } = req.params;
-
-  try {
-    const usuario = await knex("BeaBa.usuarios").where({ id_usuario }).first();
-
-    if (!usuario) {
-      return res.status(404).send({
-        mensagem: "Usuário não encontrado",
-        status: 404,
-      });
-    }
-
-    if (usuario.imagem_perfil) {
-      // Extrair o nome da imagem do usuário
-      const nomeImagem = usuario.imagem_perfil.split("/").pop();
-
-      // Construir o caminho correto para a imagem no S3
-      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/img-perfil/${nomeImagem}`;
-
-      // Configurar os parâmetros de exclusão no S3
-      const params = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: caminhoImagem,
-      };
-
-      // Excluir a imagem do S3
-      await s3.send(new DeleteObjectCommand(params));
-    }
-
-    // Agora você pode excluir o registro de usuário no banco de dados
-    await knex("BeaBa.usuarios").where({ id_usuario }).del();
-
-    res.status(200).send({
-      mensagem: "Usuário removido com sucesso!",
-      status: 200,
-    });
-  } catch (error) {
-    res.status(500).json({
-      mensagem: error.message,
-      status: 500,
     });
   }
 };
@@ -318,7 +172,5 @@ const deletarUsuarios = async (req, res) => {
 module.exports = {
   cadastrarTemplates,
   cadastrarCampos,
-  buscarUsuarios,
-  atualizarUsuarios,
-  deletarUsuarios,
+  inativarTemplate,
 };
