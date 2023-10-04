@@ -39,7 +39,7 @@ const cadastrarTemplates = async (req, res) => {
 
   if (!extensao_template) {
     return res.status(400).json({
-      mensagem: "A extensão do template é obrigatória",
+      mensagem: "Digite uma extensão válida",
     });
   }
 
@@ -47,14 +47,12 @@ const cadastrarTemplates = async (req, res) => {
     const usuario = await knex("BeaBa.usuarios").where({ id_usuario });
 
     let status_template;
-    let disponibilidade_template;
-
+  
     if (usuario[0].tipo_acesso === "ADM") {
       status_template = "ativo";
-      disponibilidade_template = true;
+      
     } else if (usuario[0].tipo_acesso === "CAD") {
       status_template = "pendente";
-      disponibilidade_template = false;
     }
 
     const data_criacao_template = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -67,7 +65,6 @@ const cadastrarTemplates = async (req, res) => {
         objetivo_template,
         extensao_template,
         status_template,
-        disponibilidade_template,
       })
       .returning("*");
 
@@ -87,9 +84,9 @@ const cadastrarTemplates = async (req, res) => {
             </style>
           </head>
           <body>
-            <h3>Seu arquivo ${nome_template}.${extensao_template} foi cadastrado com sucesso.</h3>
+            <h3>O template ${nome_template} com o formato esperado ${extensao_template} foi cadastrado com sucesso.</h3>
             <div class='logotipo'>
-              <img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49">
+              <a href="https://www.queroquero.com.br/"><img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49"></a>
             </div>
           </body>
         </html>
@@ -158,7 +155,6 @@ const inativarTemplate = async (req, res) => {
   try {
     const template = await knex("BeaBa.templates").where({ id_template }).update({
       status_template:'inativo',
-      disponibilidade_template:false
     });
 
     res.status(200).json({ mensagem: "Template inativado com sucesso",status:200 });
