@@ -1,5 +1,4 @@
 require('dotenv').config();
-const conexao = require('../../db/conexao');
 const { Router } = require('express');
 
 const {

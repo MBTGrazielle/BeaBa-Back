@@ -42,7 +42,7 @@ const login = async (req, res) => {
       });
     }
 
-    if(usuario.tipo_acesso === 'ADM'){
+    if(usuario.tipo_acesso === 'Administrador'){
       const validPassword = bcrypt.compareSync(senha, usuario.senha);
 
       if (!validPassword) {
@@ -71,7 +71,7 @@ const login = async (req, res) => {
         token,
         status: 200,
       });
-    }else if (usuario.tipo_acesso === 'CAD'){
+    }else if (usuario.tipo_acesso === 'Cadastrador'){
       const validPassword = bcrypt.compareSync(senha, usuario.senha);
 
       if (!validPassword) {
