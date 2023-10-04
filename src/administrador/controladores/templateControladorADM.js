@@ -1,19 +1,7 @@
 require("dotenv").config();
 const knex = require("../../db/conexao");
-const bcrypt = require("bcrypt");
 const moment = require("moment");
 
-const { awsConfig } = require("../../../credenciaisAWS/credenciasAWS");
-const {
-  S3Client,
-  PutObjectCommand,
-  DeleteObjectCommand,
-} = require("@aws-sdk/client-s3");
-
-const { v4: uuidv4 } = require("uuid");
-
-// Criar uma instância do serviço S3
-const s3 = new S3Client(awsConfig);
 
 const { transporter } = require("../../nodemailer/nodemailer");
 

@@ -98,7 +98,7 @@ const cadastrarUsuarios = async (req, res) => {
     });
   }
 
-  if (tipo_acesso.length !== 3) {
+  if (!tipo_acesso.length || tipo_acesso==='#') {
     return res.status(400).json({
       mensagem: "O tipo de acesso do usuário é obrigatório",
     });
@@ -221,6 +221,7 @@ const atualizarUsuarios = async (req, res) => {
   let {
     nome_usuario,
     email,
+    matricula,
     tipo_acesso,
     nome_area,
     cargo,
@@ -277,6 +278,7 @@ const atualizarUsuarios = async (req, res) => {
         imagem_perfil: urlImagem,
         nome_usuario,
         email,
+        matricula,
         tipo_acesso,
         nome_area,
         cargo,
@@ -292,6 +294,7 @@ const atualizarUsuarios = async (req, res) => {
         imagem_perfil: usuario.imagem_perfil,
         nome_usuario: usuario.nome_usuario,
         email: usuario.email,
+        matricula: usuario.matricula,
         tipo_acesso: usuario.tipo_acesso,
         nome_area: usuario.nome_area,
         cargo: usuario.cargo,
