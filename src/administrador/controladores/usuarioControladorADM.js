@@ -189,11 +189,39 @@ const cadastrarUsuarios = async (req, res) => {
   }
 };
 
-const buscarUsuarios = async (req, res) => {
+const buscarUsuariosMatricula = async (req, res) => {
   const matricula = req.params;
 
   try {
     const usuario = await knex("BeaBa.usuarios").where(matricula);
+
+    if (usuario.length > 0) {
+      return res.status(200).json({
+        mensagem: `Encontramos ${usuario.length} resultado${
+          usuario.length === 1 ? "" : "s"
+        }.`,
+        usuario,
+        status: 200,
+      });
+    } else {
+      return res.status(404).json({
+        mensagem: "Nenhum resultado foi encontrado para a sua busca.",
+        status: 404,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+    });
+  }
+};
+
+const buscarUsuarios = async (req, res) => {
+  const id_usuarioObj = req.params;
+  const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
+
+  try {
+    const usuario = await knex("BeaBa.usuarios").where({id_usuario});
 
     if (usuario.length > 0) {
       return res.status(200).json({
@@ -480,6 +508,7 @@ const esqueceuSenha = async (req, res) => {
 
 module.exports = {
   cadastrarUsuarios,
+  buscarUsuariosMatricula,
   buscarUsuarios,
   atualizarUsuarios,
   deletarUsuarios,

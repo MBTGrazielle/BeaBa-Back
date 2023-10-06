@@ -8,6 +8,6 @@ const {
 const { checkAuth } = require('../../middlewares/authADM');
 const rota = Router();
 
-rota.post('/login', login);
+rota.post('/loginUsuario', login);
 
 module.exports = rota;
