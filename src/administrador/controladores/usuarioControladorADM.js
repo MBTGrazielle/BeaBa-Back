@@ -246,6 +246,7 @@ const buscarUsuarios = async (req, res) => {
 
 const atualizarUsuarios = async (req, res) => {
   const { id_usuario } = req.params;
+
   let {
     nome_usuario,
     email,
@@ -257,6 +258,8 @@ const atualizarUsuarios = async (req, res) => {
     equipe,
     senha,
   } = req.body;
+
+  let urlImagem = ''
 
   try {
     const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
@@ -271,7 +274,7 @@ const atualizarUsuarios = async (req, res) => {
     const usuario = usuarios[0];
     usuario.senha = senha ? bcrypt.hashSync(senha, 10) : usuario.senha;
 
-    const s3 = new S3Client(); // Criar uma instância do cliente S3
+    const s3 = new S3Client(); 
 
     if (req.file) {
       const imagem_perfil = req.file;
@@ -285,7 +288,7 @@ const atualizarUsuarios = async (req, res) => {
           Key: caminhoImagemAntiga,
         };
 
-        await s3.send(new DeleteObjectCommand(params)); // Excluir a imagem anterior do S3
+        await s3.send(new DeleteObjectCommand(params)); 
       }
 
       const nomeImagem = uuidv4();
@@ -298,36 +301,37 @@ const atualizarUsuarios = async (req, res) => {
         Body: imagem_perfil.buffer,
       };
 
-      await s3.send(new PutObjectCommand(params)); // Enviar a nova imagem para o S3
+      await s3.send(new PutObjectCommand(params)); 
 
-      const urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
+       urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
 
-      await knex("BeaBa.usuarios").where({ id_usuario }).update({
-        imagem_perfil: urlImagem,
-        nome_usuario,
-        email,
-        matricula,
-        tipo_acesso,
-        nome_area,
-        cargo,
-        squad,
-        equipe,
-        senha: usuario.senha,
-      });
     }
+
+    await knex("BeaBa.usuarios").where({ id_usuario }).update({
+      imagem_perfil: urlImagem,
+      nome_usuario,
+      email,
+      matricula,
+      tipo_acesso,
+      nome_area,
+      cargo,
+      squad,
+      equipe,
+      senha: usuario.senha,
+    });
 
     res.status(200).send({
       mensagem: "Usuário atualizado com sucesso!",
       usuario: {
-        imagem_perfil: usuario.imagem_perfil,
-        nome_usuario: usuario.nome_usuario,
-        email: usuario.email,
-        matricula: usuario.matricula,
-        tipo_acesso: usuario.tipo_acesso,
-        nome_area: usuario.nome_area,
-        cargo: usuario.cargo,
-        squad: usuario.squad,
-        equipe: usuario.equipe,
+        imagem_perfil: urlImagem,
+        nome_usuario: nome_usuario,
+        email: email,
+        matricula: matricula,
+        tipo_acesso: tipo_acesso,
+        nome_area: nome_area,
+        cargo: cargo,
+        squad: squad,
+        equipe: equipe,
       },
       status: 200,
     });

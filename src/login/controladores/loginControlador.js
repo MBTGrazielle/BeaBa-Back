@@ -30,7 +30,7 @@ const login = async (req, res) => {
 
     if (!usuario) {
       return res.status(404).json({
-        mensagem: "Usuário não encontrado",
+        mensagem: "Dados inválidos",
         status: 404,
       });
     }
