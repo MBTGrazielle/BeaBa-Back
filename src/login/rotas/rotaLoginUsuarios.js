@@ -10,4 +10,5 @@ const rota = Router();
 
 rota.post('/loginUsuario', login);
 
+
 module.exports = rota;

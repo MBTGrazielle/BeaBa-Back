@@ -29,9 +29,8 @@ const meuPerfil = async (req, res) => {
 
     if (usuario.length > 0) {
       return res.status(200).json({
-        mensagem: `Encontramos ${usuario.length} resultado${
-          usuario.length === 1 ? "" : "s"
-        }.`,
+        mensagem: `Encontramos ${usuario.length} resultado${usuario.length === 1 ? "" : "s"
+          }.`,
         usuario,
         status: 200,
       });
@@ -122,6 +121,33 @@ const atualizarUsuarios = async (req, res) => {
   }
 };
 
+const buscarUsuarios = async (req, res) => {
+  const id_usuarioObj = req.params;
+  const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
+
+  try {
+    const usuario = await knex("BeaBa.usuarios").where({ id_usuario });
+
+    if (usuario.length > 0) {
+      return res.status(200).json({
+        mensagem: `Encontramos ${usuario.length} resultado${usuario.length === 1 ? "" : "s"
+          }.`,
+        usuario,
+        status: 200,
+      });
+    } else {
+      return res.status(404).json({
+        mensagem: "Nenhum resultado foi encontrado para a sua busca.",
+        status: 404,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+    });
+  }
+};
+
 const deletarImagemPerfil = async (req, res) => {
   const { id_usuario } = req.params;
 
@@ -199,7 +225,7 @@ const esqueceuSenha = async (req, res) => {
       .where({ email })
       .update({ senha: senhaCriptografada });
 
-      const emailHTML = `
+    const emailHTML = `
   <html>
     <head>
       <style>
@@ -246,6 +272,7 @@ const esqueceuSenha = async (req, res) => {
 
 module.exports = {
   meuPerfil,
+  buscarUsuarios,
   atualizarUsuarios,
   deletarImagemPerfil,
   esqueceuSenha,
