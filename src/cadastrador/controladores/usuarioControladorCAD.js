@@ -103,6 +103,8 @@ const atualizarUsuarios = async (req, res) => {
         nome_usuario,
         senha: usuario.senha,
       });
+    } else {
+      urlImagem = usuario.imagem_perfil
     }
 
     res.status(200).send({

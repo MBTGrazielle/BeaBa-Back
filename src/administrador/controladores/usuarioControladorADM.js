@@ -98,7 +98,7 @@ const cadastrarUsuarios = async (req, res) => {
     });
   }
 
-  if (!tipo_acesso.length || tipo_acesso==='#') {
+  if (!tipo_acesso.length || tipo_acesso === '#') {
     return res.status(400).json({
       mensagem: "O tipo de acesso do usuário é obrigatório",
     });
@@ -197,9 +197,8 @@ const buscarUsuariosMatricula = async (req, res) => {
 
     if (usuario.length > 0) {
       return res.status(200).json({
-        mensagem: `Encontramos ${usuario.length} resultado${
-          usuario.length === 1 ? "" : "s"
-        }.`,
+        mensagem: `Encontramos ${usuario.length} resultado${usuario.length === 1 ? "" : "s"
+          }.`,
         usuario,
         status: 200,
       });
@@ -221,13 +220,12 @@ const buscarUsuarios = async (req, res) => {
   const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
 
   try {
-    const usuario = await knex("BeaBa.usuarios").where({id_usuario});
+    const usuario = await knex("BeaBa.usuarios").where({ id_usuario });
 
     if (usuario.length > 0) {
       return res.status(200).json({
-        mensagem: `Encontramos ${usuario.length} resultado${
-          usuario.length === 1 ? "" : "s"
-        }.`,
+        mensagem: `Encontramos ${usuario.length} resultado${usuario.length === 1 ? "" : "s"
+          }.`,
         usuario,
         status: 200,
       });
@@ -259,7 +257,7 @@ const atualizarUsuarios = async (req, res) => {
     senha,
   } = req.body;
 
-  let urlImagem = ''
+  let urlImagem = '';
 
   try {
     const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
@@ -274,22 +272,10 @@ const atualizarUsuarios = async (req, res) => {
     const usuario = usuarios[0];
     usuario.senha = senha ? bcrypt.hashSync(senha, 10) : usuario.senha;
 
-    const s3 = new S3Client(); 
+    const s3 = new S3Client();
 
     if (req.file) {
       const imagem_perfil = req.file;
-
-      if (usuario.imagem_perfil) {
-        const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
-        const caminhoImagemAntiga = `${nome_area}/${squad}/img-perfil/${nomeImagemAntiga}`;
-
-        const params = {
-          Bucket: process.env.AWS_BUCKET_NAME,
-          Key: caminhoImagemAntiga,
-        };
-
-        await s3.send(new DeleteObjectCommand(params)); 
-      }
 
       const nomeImagem = uuidv4();
       const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
@@ -301,10 +287,23 @@ const atualizarUsuarios = async (req, res) => {
         Body: imagem_perfil.buffer,
       };
 
-      await s3.send(new PutObjectCommand(params)); 
+      await s3.send(new PutObjectCommand(params));
 
-       urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
+      if (usuario.imagem_perfil) {
+        const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
+        const caminhoImagemAntiga = `${nome_area}/${squad}/img-perfil/${nomeImagemAntiga}`;
 
+        const paramsAntigos = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: caminhoImagemAntiga,
+        };
+
+        await s3.send(new DeleteObjectCommand(paramsAntigos));
+      }
+
+      urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
+    } else {
+      urlImagem = usuario.imagem_perfil
     }
 
     await knex("BeaBa.usuarios").where({ id_usuario }).update({
@@ -342,6 +341,7 @@ const atualizarUsuarios = async (req, res) => {
     });
   }
 };
+
 
 const deletarUsuarios = async (req, res) => {
   const { id_usuario } = req.params;
@@ -454,18 +454,17 @@ const esqueceuSenha = async (req, res) => {
         .json({ mensagem: "Usuário não encontrado.", status: 404 });
     }
 
-    // Gerar uma senha nova aleatória
+
     const novaSenha = gerarSenhaAleatoria();
 
-    // Criptografar a nova senha
+
     const senhaCriptografada = await bcrypt.hash(novaSenha, 10);
 
-    // Atualizar a senha do usuário no banco de dados
     await knex("BeaBa.usuarios")
       .where({ email })
       .update({ senha: senhaCriptografada });
 
-      const emailHTML = `
+    const emailHTML = `
   <html>
     <head>
       <style>
