@@ -65,27 +65,17 @@ const atualizarUsuarios = async (req, res) => {
     }
 
     const usuario = usuarios[0];
-    usuario.senha = senha ? bcrypt.hashSync(senha, 10) : usuario.senha;
+    if (senha !== usuario.senha) {
+      usuario.senha = bcrypt.hashSync(senha, 10);
+    }
 
     const s3 = new S3Client(); // Criar uma instância do cliente S3
 
     if (req.file) {
       const imagem_perfil = req.file;
 
-      if (usuario.imagem_perfil) {
-        const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
-        const caminhoImagemAntiga = `${usuario.nome_area}/${usuario.squad}/${nomeImagemAntiga}`;
-
-        const params = {
-          Bucket: process.env.AWS_BUCKET_NAME,
-          Key: caminhoImagemAntiga,
-        };
-
-        await s3.send(new DeleteObjectCommand(params)); // Excluir a imagem anterior do S3
-      }
-
       const nomeImagem = uuidv4();
-      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/img-perfil${nomeImagem}.${imagem_perfil.originalname
+      const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
         .split(".")
         .pop()}`;
       const params = {
@@ -94,24 +84,36 @@ const atualizarUsuarios = async (req, res) => {
         Body: imagem_perfil.buffer,
       };
 
-      await s3.send(new PutObjectCommand(params)); // Enviar a nova imagem para o S3
+      await s3.send(new PutObjectCommand(params));
 
-      const urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
+      if (usuario.imagem_perfil) {
+        const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
+        const caminhoImagemAntiga = `${nome_area}/${squad}/img-perfil/${nomeImagemAntiga}`;
 
-      await knex("BeaBa.usuarios").where({ id_usuario }).update({
-        imagem_perfil: urlImagem,
-        nome_usuario,
-        senha: usuario.senha,
-      });
+        const paramsAntigos = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: caminhoImagemAntiga,
+        };
+
+        await s3.send(new DeleteObjectCommand(paramsAntigos));
+      }
+
+      urlImagem = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${caminhoImagem}`;
     } else {
       urlImagem = usuario.imagem_perfil
     }
 
+    await knex("BeaBa.usuarios").where({ id_usuario }).update({
+      imagem_perfil: urlImagem,
+      nome_usuario,
+      senha: usuario.senha,
+    });
+
     res.status(200).send({
       mensagem: "Usuário atualizado com sucesso!",
       usuario: {
-        imagem_perfil: usuario.imagem_perfil,
-        nome_usuario: usuario.nome_usuario,
+        imagem_perfil: urlImagem,
+        nome_usuario: nome_usuario,
       },
       status: 200,
     });
@@ -122,6 +124,7 @@ const atualizarUsuarios = async (req, res) => {
     });
   }
 };
+
 
 const buscarUsuarios = async (req, res) => {
   const id_usuarioObj = req.params;

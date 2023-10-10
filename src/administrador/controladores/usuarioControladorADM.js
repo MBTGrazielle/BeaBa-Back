@@ -270,7 +270,10 @@ const atualizarUsuarios = async (req, res) => {
     }
 
     const usuario = usuarios[0];
-    usuario.senha = senha ? bcrypt.hashSync(senha, 10) : usuario.senha;
+    if (senha !== usuario.senha) {
+      const hashedSenha = bcrypt.hashSync(senha, 10);
+      usuario.senha = hashedSenha;
+    }
 
     const s3 = new S3Client();
 
