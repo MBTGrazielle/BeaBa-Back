@@ -76,7 +76,7 @@ const cadastrarUsuarios = async (req, res) => {
 
   if (!nome_area) {
     return res.status(400).json({
-      mensagem: "O área do usuário é obrigatório",
+      mensagem: "A área do usuário é obrigatória",
     });
   }
 
