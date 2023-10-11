@@ -52,6 +52,8 @@ const atualizarUsuarios = async (req, res) => {
   let {
     nome_usuario,
     senha,
+    nome_area,
+    squad
   } = req.body;
 
   try {
@@ -65,8 +67,9 @@ const atualizarUsuarios = async (req, res) => {
     }
 
     const usuario = usuarios[0];
-    if (senha !== usuario.senha) {
-      usuario.senha = bcrypt.hashSync(senha, 10);
+    if (senha && senha !== usuario.senha) {
+      const hashedSenha = bcrypt.hashSync(senha, 10);
+      usuario.senha = hashedSenha;
     }
 
     const s3 = new S3Client(); // Criar uma instância do cliente S3

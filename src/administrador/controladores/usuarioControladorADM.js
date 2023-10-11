@@ -270,7 +270,7 @@ const atualizarUsuarios = async (req, res) => {
     }
 
     const usuario = usuarios[0];
-    if (senha !== usuario.senha) {
+    if (senha && senha !== usuario.senha) {
       const hashedSenha = bcrypt.hashSync(senha, 10);
       usuario.senha = hashedSenha;
     }
@@ -344,7 +344,6 @@ const atualizarUsuarios = async (req, res) => {
     });
   }
 };
-
 
 const deletarUsuarios = async (req, res) => {
   const { id_usuario } = req.params;
