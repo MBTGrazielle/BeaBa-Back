@@ -36,12 +36,14 @@ const cadastrarUsuarios = async (req, res) => {
   if (!nome_usuario || nome_usuario.length < 3) {
     return res.status(400).json({
       mensagem: "O nome do usuário é obrigatório",
+      status: 400
     });
   }
 
   if (!matricula) {
     return res.status(400).json({
       mensagem: "A matrícula do usuário é obrigatória",
+      status: 400
     });
   }
 
@@ -77,30 +79,35 @@ const cadastrarUsuarios = async (req, res) => {
   if (!nome_area) {
     return res.status(400).json({
       mensagem: "A área do usuário é obrigatória",
+      status: 400
     });
   }
 
   if (!cargo) {
     return res.status(400).json({
       mensagem: "O cargo do usuário é obrigatório",
+      status: 400
     });
   }
 
   if (!squad) {
     return res.status(400).json({
       mensagem: "A squad do usuário é obrigatória",
+      status: 400
     });
   }
 
   if (!equipe) {
     return res.status(400).json({
       mensagem: "A equipe do usuário é obrigatória",
+      status: 400
     });
   }
 
   if (!tipo_acesso.length || tipo_acesso === '#') {
     return res.status(400).json({
       mensagem: "O tipo de acesso do usuário é obrigatório",
+      status: 400
     });
   }
 
