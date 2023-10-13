@@ -162,6 +162,7 @@ const cadastrarUsuarios = async (req, res) => {
       </style>
     </head>
     <body>
+    <h1>Olá, ${nome_usuario}</h1>
     <h3>Segue a senha para utilização do Sistema de Gerenciamento Eletrônico de Templates <h3>
     <p>Senha: <strong>${enviarSenha}</strong></p>
     <div class='logotipo'>
