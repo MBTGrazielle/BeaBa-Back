@@ -8,7 +8,6 @@ const {
   buscarUsuarios,
   atualizarUsuarios,
   deletarUsuarios,
-  esqueceuSenha,
   deletarImagemPerfil
 } = require('../../administrador/controladores/usuarioControladorADM');
 
@@ -18,9 +17,8 @@ const rota = Router();
 
 rota.get('/adm/buscarUsuarios/:matricula', buscarUsuariosMatricula);
 rota.get('/adm/buscarUsuariosId/:id_usuario', buscarUsuarios);
-rota.post('/adm/cadastrar',upload.single('imagem_perfil'), cadastrarUsuarios);
-rota.post('/adm/esqueceuSenha', esqueceuSenha);
-rota.patch('/adm/atualizar/:id_usuario',upload.single('imagem_perfil'), atualizarUsuarios);
+rota.post('/adm/cadastrar', upload.single('imagem_perfil'), cadastrarUsuarios);
+rota.patch('/adm/atualizar/:id_usuario', upload.single('imagem_perfil'), atualizarUsuarios);
 rota.delete('/adm/deletar/:id_usuario', deletarUsuarios);
 rota.delete('/adm/deletarImagem/:id_usuario', deletarImagemPerfil);
 

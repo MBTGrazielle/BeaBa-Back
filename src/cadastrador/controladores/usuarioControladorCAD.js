@@ -16,11 +16,6 @@ const { v4: uuidv4 } = require("uuid");
 // Criar uma instância do serviço S3
 const s3 = new S3Client(awsConfig);
 
-const {
-  transporter,
-  gerarSenhaAleatoria,
-} = require("../../nodemailer/nodemailer");
-
 const meuPerfil = async (req, res) => {
   const matricula = req.params;
 
@@ -128,7 +123,6 @@ const atualizarUsuarios = async (req, res) => {
   }
 };
 
-
 const buscarUsuarios = async (req, res) => {
   const id_usuarioObj = req.params;
   const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
@@ -210,78 +204,9 @@ const deletarImagemPerfil = async (req, res) => {
   }
 };
 
-const esqueceuSenha = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    const usuario = await knex("BeaBa.usuarios").where({ email }).first();
-
-    if (!usuario) {
-      return res
-        .status(404)
-        .json({ mensagem: "Usuário não encontrado.", status: 404 });
-    }
-
-    // Gerar uma senha nova aleatória
-    const novaSenha = gerarSenhaAleatoria();
-
-    // Criptografar a nova senha
-    const senhaCriptografada = await bcrypt.hash(novaSenha, 10);
-
-    // Atualizar a senha do usuário no banco de dados
-    await knex("BeaBa.usuarios")
-      .where({ email })
-      .update({ senha: senhaCriptografada });
-
-    const emailHTML = `
-  <html>
-    <head>
-      <style>
-       img{
-        border-radius:50%;
-        width:15%
-       }
-
-       strong{
-        color:red
-       }
-      </style>
-    </head>
-    <body>
-    <h3>Segue a senha para utilização do Sistema de Gerenciamento Eletrônico de Templates <h3>
-    <p>Senha: <strong>${novaSenha}</strong></p>
-    <div class='logotipo'>
-    <img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49">
-    </div>
-    </body>
-  </html>
-`;
-
-    // Enviar a nova senha para o e-mail do usuário
-    await transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: email,
-      subject: "Redefinição de Senha",
-      html: emailHTML,
-    });
-
-    return res.status(200).json({
-      mensagem: "Uma nova senha foi enviada para o seu e-mail.",
-      status: 200,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      mensagem: "Ocorreu um erro ao redefinir a senha.",
-      status: 500,
-    });
-  }
-};
-
 module.exports = {
   meuPerfil,
   buscarUsuarios,
   atualizarUsuarios,
   deletarImagemPerfil,
-  esqueceuSenha,
 };
