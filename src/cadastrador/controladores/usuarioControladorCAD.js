@@ -124,8 +124,8 @@ const atualizarUsuarios = async (req, res) => {
 };
 
 const buscarUsuarios = async (req, res) => {
-  const id_usuarioObj = req.params;
-  const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
+  const { id_usuario } = req.params;
+
 
   try {
     const usuario = await knex("BeaBa.usuarios").where({ id_usuario });

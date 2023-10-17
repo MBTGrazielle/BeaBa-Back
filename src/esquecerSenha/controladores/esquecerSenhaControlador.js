@@ -2,6 +2,11 @@ require("dotenv").config();
 const knex = require("../../db/conexao");
 const bcrypt = require("bcrypt");
 
+const {
+  transporter,
+  gerarSenhaAleatoria,
+} = require("../../nodemailer/nodemailer");
+
 
 const esqueceuSenha = async (req, res) => {
   const { email } = req.body;

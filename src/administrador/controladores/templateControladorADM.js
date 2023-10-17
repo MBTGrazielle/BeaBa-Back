@@ -6,10 +6,8 @@ const moment = require("moment");
 const { transporter } = require("../../nodemailer/nodemailer");
 
 const cadastrarTemplates = async (req, res) => {
-  const id_usuarioObj = req.params;
-  const id_usuario = parseInt(id_usuarioObj.id_usuario, 10);
-  const emailObj = req.params;
-  const email = emailObj.email;
+  const { id_usuario } = req.params;
+  const { email } = req.params;
 
   const { nome_template, objetivo_template, extensao_template } = req.body;
 
@@ -35,10 +33,10 @@ const cadastrarTemplates = async (req, res) => {
     const usuario = await knex("BeaBa.usuarios").where({ id_usuario });
 
     let status_template;
-  
+
     if (usuario[0].tipo_acesso === "ADM") {
       status_template = "ativo";
-      
+
     } else if (usuario[0].tipo_acesso === "CAD") {
       status_template = "pendente";
     }
@@ -97,9 +95,38 @@ const cadastrarTemplates = async (req, res) => {
   }
 };
 
+const visualizarTemplates = async (req, res) => {
+  try {
+    const resultado = await knex.select().from("BeaBa.templates");
+    const templates = resultado;
+    res.status(200).json({ templates });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensagem: "Erro ao buscar os templates.",
+    });
+  }
+};
+
+const statusTemplates = async (req, res) => {
+  const { status_template } = req.params
+  console.log(status_template)
+  // const squad = req.params
+  try {
+    const resultado = await knex("BeaBa.templates").where({ status_template });
+    console.log(resultado)
+    res.status(200).json({ mensagem: "Template por status encontrado", resultado, status: 200 });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensagem: "Erro ao buscar os templates.",
+    });
+  }
+};
+
 const cadastrarCampos = async (req, res) => {
-  const id_templateObj = req.params;
-  const id_template = parseInt(id_templateObj.id_template, 10);
+  const { id_template } = req.params;
+
 
   const { nome_campo, tipo_dado_campo } = req.body;
 
@@ -136,16 +163,15 @@ const cadastrarCampos = async (req, res) => {
 };
 
 const inativarTemplate = async (req, res) => {
-  const id_templateObj = req.params;
-  const id_template = parseInt(id_templateObj.id_template, 10);
-  const referencia_template = id_template;
+  const { id_template } = req.params;
+
 
   try {
     const template = await knex("BeaBa.templates").where({ id_template }).update({
-      status_template:'inativo',
+      status_template: 'inativo',
     });
 
-    res.status(200).json({ mensagem: "Template inativado com sucesso",status:200 });
+    res.status(200).json({ mensagem: "Template inativado com sucesso", status: 200 });
   } catch (error) {
     res.status(500).json({
       mensagem: error.message,
@@ -155,6 +181,8 @@ const inativarTemplate = async (req, res) => {
 
 module.exports = {
   cadastrarTemplates,
+  statusTemplates,
+  visualizarTemplates,
   cadastrarCampos,
   inativarTemplate,
 };
