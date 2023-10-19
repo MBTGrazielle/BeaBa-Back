@@ -7,25 +7,24 @@ const { transporter } = require("../../nodemailer/nodemailer");
 
 const cadastrarTemplates = async (req, res) => {
   const { id_usuario } = req.params;
-  const { email } = req.params;
 
   const { nome_template, objetivo_template, extensao_template } = req.body;
 
   if (!nome_template || nome_template.length < 3) {
     return res.status(400).json({
-      mensagem: "O nome do template é obrigatório",
+      mensagem: "O nome do template é obrigatório", status: 400
     });
   }
 
   if (!objetivo_template || objetivo_template.length < 4) {
     return res.status(400).json({
-      mensagem: "O objetivo do template é obrigatório",
+      mensagem: "O objetivo do template é obrigatório", status: 400
     });
   }
 
-  if (!extensao_template) {
+  if (extensao_template === 'selecione') {
     return res.status(400).json({
-      mensagem: "Digite uma extensão válida",
+      mensagem: "Selecione uma extensão válida", status: 400
     });
   }
 
@@ -34,11 +33,11 @@ const cadastrarTemplates = async (req, res) => {
 
     let status_template;
 
-    if (usuario[0].tipo_acesso === "ADM") {
-      status_template = "ativo";
+    if (usuario[0].tipo_acesso === "Administrador") {
+      status_template = "Ativo";
 
-    } else if (usuario[0].tipo_acesso === "CAD") {
-      status_template = "pendente";
+    } else if (usuario[0].tipo_acesso === "Cadastrador") {
+      status_template = "Pendente";
     }
 
     const data_criacao_template = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -46,6 +45,9 @@ const cadastrarTemplates = async (req, res) => {
     const template = await knex("BeaBa.templates")
       .insert({
         referencia_usuario: id_usuario,
+        referencia_nome: usuario[0].nome_usuario,
+        referencia_squad: usuario[0].squad,
+        referencia_area: usuario[0].nome_area,
         data_criacao_template,
         nome_template,
         objetivo_template,
@@ -54,40 +56,11 @@ const cadastrarTemplates = async (req, res) => {
       })
       .returning("*");
 
-    if (template) {
-      const emailHTML = `
-        <html>
-          <head>
-            <style>
-              img {
-                border-radius: 50%;
-                width: 15%;
-              }
-
-              strong {
-                color: red;
-              }
-            </style>
-          </head>
-          <body>
-            <h3>O template ${nome_template} com o formato esperado ${extensao_template} foi cadastrado com sucesso.</h3>
-            <div class='logotipo'>
-              <a href="https://www.queroquero.com.br/"><img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49"></a>
-            </div>
-          </body>
-        </html>
-      `;
-      await transporter.sendMail({
-        from: process.env.SMTP_USER,
-        to: email,
-        subject: "Confirmação de cadastro de Template",
-        html: emailHTML,
-      });
-      res.status(201).json({
-        mensagem: "Cadastro realizado com sucesso!",
-        status: 201,
-      });
-    }
+    res.status(201).json({
+      mensagem: "Cadastro realizado com sucesso!",
+      template,
+      status: 201,
+    });
   } catch (err) {
     res.status(500).json({
       mensagem: err.message,
@@ -110,16 +83,22 @@ const visualizarTemplates = async (req, res) => {
 
 const statusTemplates = async (req, res) => {
   const { status_template } = req.params
-  console.log(status_template)
+
   // const squad = req.params
   try {
     const resultado = await knex("BeaBa.templates").where({ status_template });
-    console.log(resultado)
+    if (resultado.length === 0) {
+      return res.status(404).json({
+        mensagem: "Template não encontrado", resultado, status: 404
+      });
+    }
+
     res.status(200).json({ mensagem: "Template por status encontrado", resultado, status: 200 });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       mensagem: "Erro ao buscar os templates.",
+      status: 500
     });
   }
 };
@@ -179,10 +158,38 @@ const inativarTemplate = async (req, res) => {
   }
 };
 
+const deletarTemplates = async (req, res) => {
+  const { id_template } = req.params;
+
+  try {
+    const templates = await knex("BeaBa.templates").where({ id_template }).first();
+
+    if (!templates) {
+      return res.status(404).send({
+        mensagem: "Template não encontrado",
+        status: 404,
+      });
+    }
+
+    await knex("BeaBa.templates").where({ id_template }).del();
+
+    res.status(200).send({
+      mensagem: "Template removido com sucesso!",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+      status: 500,
+    });
+  }
+};
+
 module.exports = {
   cadastrarTemplates,
   statusTemplates,
   visualizarTemplates,
   cadastrarCampos,
   inativarTemplate,
+  deletarTemplates
 };
