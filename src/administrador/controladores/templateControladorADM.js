@@ -70,10 +70,12 @@ const cadastrarTemplates = async (req, res) => {
 
 const visualizarTemplates = async (req, res) => {
   const { id_template } = req.params
+  const referencia_template = id_template
   try {
-    const resultado = await knex("BeaBa.templates").where({ id_template });
+    const resultadoTemplates = await knex("BeaBa.templates").where({ id_template });
+    const resultadoCampos = await knex("BeaBa.campos").where({ referencia_template });
 
-    res.status(200).json({ resultado });
+    res.status(200).json({ resultadoTemplates, resultadoCampos });
   } catch (error) {
     console.error(error);
     res.status(500).json({
