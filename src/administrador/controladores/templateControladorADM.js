@@ -69,10 +69,11 @@ const cadastrarTemplates = async (req, res) => {
 };
 
 const visualizarTemplates = async (req, res) => {
+  const { id_template } = req.params
   try {
-    const resultado = await knex.select().from("BeaBa.templates");
-    const templates = resultado;
-    res.status(200).json({ templates });
+    const resultado = await knex("BeaBa.templates").where({ id_template });
+
+    res.status(200).json({ resultado });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -112,12 +113,14 @@ const cadastrarCampos = async (req, res) => {
   if (!nome_campo || nome_campo.length < 3) {
     return res.status(400).json({
       mensagem: "O nome do campo é obrigatório",
+      status: 400
     });
   }
 
   if (!tipo_dado_campo) {
     return res.status(400).json({
       mensagem: "O tipo de dado do campo é obrigatório",
+      status: 400
     });
   }
 
@@ -147,13 +150,32 @@ const inativarTemplate = async (req, res) => {
 
   try {
     const template = await knex("BeaBa.templates").where({ id_template }).update({
-      status_template: 'inativo',
+      status_template: 'Inativo',
     });
 
     res.status(200).json({ mensagem: "Template inativado com sucesso", status: 200 });
   } catch (error) {
     res.status(500).json({
       mensagem: error.message,
+      status: 500
+    });
+  }
+};
+
+const ativarTemplate = async (req, res) => {
+  const { id_template } = req.params;
+
+
+  try {
+    const template = await knex("BeaBa.templates").where({ id_template }).update({
+      status_template: 'Ativo',
+    });
+
+    res.status(200).json({ mensagem: "Template ativado com sucesso", status: 200 });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+      status: 500
     });
   }
 };
@@ -191,5 +213,6 @@ module.exports = {
   visualizarTemplates,
   cadastrarCampos,
   inativarTemplate,
+  ativarTemplate,
   deletarTemplates
 };
