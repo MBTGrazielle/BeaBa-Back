@@ -69,13 +69,36 @@ const cadastrarTemplates = async (req, res) => {
 };
 
 const visualizarTemplates = async (req, res) => {
-  const { id_template } = req.params
-  const referencia_template = id_template
+  const { id_template } = req.params;
+  const referencia_template = id_template;
+
   try {
     const resultadoTemplates = await knex("BeaBa.templates").where({ id_template });
+
+    if (resultadoTemplates.length === 0) {
+      res.status(404).json({ mensagem: "Template não encontrado" });
+      return;
+    }
+
     const resultadoCampos = await knex("BeaBa.campos").where({ referencia_template });
 
-    res.status(200).json({ resultadoTemplates, resultadoCampos });
+    if (resultadoCampos.length === 0) {
+      res.status(404).json({ mensagem: "Campos do template não encontrados" });
+      return;
+    }
+
+    const camposEtipos = {};
+    resultadoCampos.forEach((campo, index) => {
+      camposEtipos[`${index + 1}`] = {
+        nome: campo.nome_campo,
+        tipo: campo.tipo_dado_campo,
+      };
+    });
+
+    res.status(200).json({
+      resultadoTemplates,
+      camposEtipos,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
