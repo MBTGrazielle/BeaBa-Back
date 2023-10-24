@@ -12,7 +12,8 @@ const {
   deletarTemplates,
   visualizarTemplates,
   deletarCampos,
-  invalidarTemplate
+  invalidarTemplate,
+  pendenteTemplate
 } = require('../../administrador/controladores/templateControladorADM');
 
 const { checkAuth } = require('../../middlewares/authADM');
@@ -24,6 +25,7 @@ rota.get('/adm/visualizar/:id_template', visualizarTemplates)
 rota.post('/adm/cadastrarTemplate/:id_usuario', cadastrarTemplates);
 rota.post('/adm/cadastrarCampo/:id_template', cadastrarCampos);
 rota.patch('/adm/inativarTemplate/:id_template', inativarTemplate);
+rota.patch('/adm/pendenteTemplate/:id_template', pendenteTemplate);
 rota.patch('/adm/invalidarTemplate/:id_template/:email', invalidarTemplate);
 rota.patch('/adm/ativarTemplate/:id_template', ativarTemplate);
 rota.delete('/adm/deletarTemplate/:id_template', deletarTemplates);

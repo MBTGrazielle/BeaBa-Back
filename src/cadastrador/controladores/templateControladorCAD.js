@@ -172,126 +172,6 @@ const cadastrarCampos = async (req, res) => {
   }
 };
 
-const inativarTemplate = async (req, res) => {
-  const { id_template } = req.params;
-
-
-  try {
-    const template = await knex("BeaBa.templates").where({ id_template }).update({
-      status_template: 'Inativo',
-    });
-
-    res.status(200).json({ mensagem: "Template inativado com sucesso", status: 200 });
-  } catch (error) {
-    res.status(500).json({
-      mensagem: error.message,
-      status: 500
-    });
-  }
-};
-
-const pendenteTemplate = async (req, res) => {
-  const { id_template } = req.params;
-
-
-  try {
-    const template = await knex("BeaBa.templates").where({ id_template }).update({
-      status_template: 'Pendente',
-    });
-
-    res.status(200).json({ mensagem: "Template enviado para pendente com sucesso", status: 200 });
-  } catch (error) {
-    res.status(500).json({
-      mensagem: error.message,
-      status: 500
-    });
-  }
-};
-
-const invalidarTemplate = async (req, res) => {
-  const { id_template, email } = req.params;
-  const { motivo_invalidacao } = req.body;
-
-  if (!motivo_invalidacao || motivo_invalidacao.trim().length === 0) {
-    return res.status(400).json({
-      mensagem: 'O motivo da invalidação é obrigatório',
-      status: 400,
-    });
-  }
-
-  try {
-    const templates = await knex("BeaBa.templates").where({ id_template });
-    if (templates.length === 0) {
-      return res.status(404).json({
-        mensagem: 'Template não encontrado',
-        status: 404,
-      });
-    }
-
-    const template = await knex("BeaBa.templates").where({ id_template }).update({
-      status_template: 'Invalidado',
-      motivo_invalidacao: motivo_invalidacao,
-    });
-
-    if (template) {
-      const emailHTML = `
-        <html>
-          <head>
-            <style>
-              img {
-                border-radius: 50%;
-                width: 15%;
-              }
-              strong {
-                color: red;
-              }
-            </style>
-          </head>
-          <body>
-            <h1>Olá, ${templates[0].referencia_nome}</h1>
-            <h3>O template ${templates[0].nome_template} foi invalidado pelo administrador</h3>
-            <p>Confira o motivo: <strong>${motivo_invalidacao}</strong></p>
-            <div class='logotipo'>
-              <a href="https://www.queroquero.com.br/"><img src="https://media.giphy.com/avatars/lojasqq/C2c7avE93StW.png"></a>
-            </div>
-          </body>
-        </html>
-      `;
-      await transporter.sendMail({
-        from: process.env.SMTP_USER,
-        to: email,
-        subject: "Sistema de Gerenciamento Eletrônico de Templates - Template Invalidado",
-        html: emailHTML,
-      });
-    }
-
-    res.status(200).json({ mensagem: "Template invalidado com sucesso", status: 200 });
-  } catch (error) {
-    res.status(500).json({
-      mensagem: error.message,
-      status: 500
-    });
-  }
-};
-
-const ativarTemplate = async (req, res) => {
-  const { id_template } = req.params;
-
-
-  try {
-    const template = await knex("BeaBa.templates").where({ id_template }).update({
-      status_template: 'Ativo',
-    });
-
-    res.status(200).json({ mensagem: "Template ativado com sucesso", status: 200 });
-  } catch (error) {
-    res.status(500).json({
-      mensagem: error.message,
-      status: 500
-    });
-  }
-};
-
 const deletarTemplates = async (req, res) => {
   const { id_template } = req.params;
 
@@ -352,10 +232,6 @@ module.exports = {
   statusTemplates,
   visualizarTemplates,
   cadastrarCampos,
-  inativarTemplate,
-  invalidarTemplate,
-  pendenteTemplate,
-  ativarTemplate,
   deletarTemplates,
   deletarCampos
 };
