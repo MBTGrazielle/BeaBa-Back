@@ -10,6 +10,8 @@ const cadastrarTemplates = async (req, res) => {
 
   const { nome_template, objetivo_template, extensao_template, motivo_invalidacao } = req.body;
 
+  let tratar = nome_template.replace(/\s/g, '').toLowerCase();
+
   if (!nome_template || nome_template.length < 3) {
     return res.status(400).json({
       mensagem: "O nome do template é obrigatório", status: 400
@@ -49,7 +51,7 @@ const cadastrarTemplates = async (req, res) => {
         referencia_squad: usuario[0].squad,
         referencia_area: usuario[0].nome_area,
         data_criacao_template,
-        nome_template,
+        nome_template: tratar,
         objetivo_template,
         extensao_template,
         status_template,
