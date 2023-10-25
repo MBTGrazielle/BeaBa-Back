@@ -1,6 +1,7 @@
 require("dotenv").config();
 const knex = require("../../db/conexao");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const { awsConfig } = require("../../../credenciaisAWS/credenciasAWS");
 const {
@@ -114,8 +115,15 @@ const cadastrarUsuarios = async (req, res) => {
   let novaSenha = gerarSenhaAleatoria();
   let enviarSenha = novaSenha;
 
-  const senhaHasheada = bcrypt.hashSync(novaSenha, 10);
-  novaSenha = senhaHasheada;
+  const chave = crypto.randomBytes(32);
+
+  const iv = crypto.randomBytes(16);
+
+  const cipher = crypto.createCipheriv('aes-256-cbc', chave, iv);
+
+  let senhaCriptografada = cipher.update(novaSenha, 'utf8', 'hex');
+  senhaCriptografada += cipher.final('hex');
+
 
   let urlImagem = null;
 
@@ -149,7 +157,9 @@ const cadastrarUsuarios = async (req, res) => {
         cargo,
         squad,
         equipe,
-        senha: novaSenha,
+        chave,
+        iv,
+        senha: senhaCriptografada,
       })
       .returning("*");
 

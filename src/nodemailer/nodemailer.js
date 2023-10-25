@@ -11,18 +11,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const gerarSenhaAleatoria = () => {
-  const length = 8; // comprimento da senha aleatória desejada
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+function gerarSenhaAleatoria() {
+  const tamanhoSenha = 10; // Tamanho da senha
+  const caracteresPermitidos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let senha = '';
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    senha += characters[randomIndex];
+  for (let i = 0; i < tamanhoSenha; i++) {
+    const randomIndex = Math.floor(Math.random() * caracteresPermitidos.length);
+    senha += caracteresPermitidos.charAt(randomIndex);
   }
-
   return senha;
-};
+}
 
 module.exports = { transporter, gerarSenhaAleatoria };
