@@ -8,13 +8,14 @@ const SECRETCAD = process.env.SECRETCAD;
 const login = async (req, res) => {
   const { email, senha } = req.body;
 
-  if (!email) {
+  if (!email || !senha) {
     return res.status(400).json({
       mensagem: "O e-mail e senha são obrigatórios",
       status: 400,
     });
   }
 
+  // Verifique o formato do email
   const emailRegex =
     /^([a-z]){1,}([a-z0-9._-]){1,}([@]){1}([a-z]){2,}([.]){1}([a-z]){2,}([.]?){1}([a-z]?){2,}$/i;
   if (!emailRegex.test(email)) {
@@ -26,11 +27,19 @@ const login = async (req, res) => {
 
   try {
     const usuario = await knex("BeaBa.usuarios").where("email", email).first();
-    
+
     if (!usuario) {
       return res.status(404).json({
         mensagem: "Dados inválidos",
         status: 404,
+      });
+    }
+
+    // Verifique se o usuário está desabilitado
+    if (usuario.tipo_acesso === "Desabilitado") {
+      return res.status(401).json({
+        mensagem: "Usuário sem permissão de acessar ao sistema",
+        status: 401,
       });
     }
 
@@ -83,6 +92,7 @@ const login = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   login,

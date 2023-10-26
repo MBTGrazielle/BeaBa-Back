@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 function gerarSenhaAleatoria() {
-  const tamanhoSenha = 10; // Tamanho da senha
+  const tamanhoSenha = 10;
   const caracteresPermitidos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let senha = '';
   for (let i = 0; i < tamanhoSenha; i++) {

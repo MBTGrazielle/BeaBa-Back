@@ -116,14 +116,13 @@ const cadastrarUsuarios = async (req, res) => {
   let enviarSenha = novaSenha;
 
   const chave = crypto.randomBytes(32);
-  console.log(chave)
+
   const iv = crypto.randomBytes(16);
 
-  const cipher = crypto.createCipheriv('aes-256-cbc', chave, iv);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(chave), iv);
 
-  let senhaCriptografada = cipher.update(novaSenha, 'utf8', 'hex');
+  let senhaCriptografada = cipher.update(novaSenha, 'utf-8', 'hex');
   senhaCriptografada += cipher.final('hex');
-
 
   let urlImagem = null;
 

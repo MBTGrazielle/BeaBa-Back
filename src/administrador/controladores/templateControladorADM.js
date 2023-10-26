@@ -293,42 +293,51 @@ const ativarTemplate = async (req, res) => {
 };
 
 const atualizarTemplate = async (req, res) => {
-  const { id_usuario, id_template } = req.params;
+  const { id_template } = req.params;
+  const { nome_template, objetivo_template, extensao_template, motivo_invalidacao, campos } = req.body;
 
-  let {
-    nome_template,
-    objetivo_template,
-  } = req.body;
+  if (!nome_template || nome_template.length < 3) {
+    return res.status(400).json({
+      mensagem: "O nome do template é obrigatório",
+      status: 400
+    });
+  }
 
-  let urlImagem = '';
+  if (!objetivo_template || objetivo_template.length < 4) {
+    return res.status(400).json({
+      mensagem: "O objetivo do template é obrigatório",
+      status: 400
+    });
+  }
 
   try {
-    const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
-
-    if (usuarios.length === 0) {
-      return res.status(404).send({
-        mensagem: "Usuário não encontrado",
-        status: 404,
-      });
-    }
-
-    await knex("BeaBa.templates").where({ id_template, referencia_usuario: id_usuario }).update({
-      nome_template,
-      objetivo_template,
-    });
-
-    res.status(200).send({
-      mensagem: "Template atualizado com sucesso!",
-      template: {
+    const template = await knex("BeaBa.templates")
+      .where({ id_template })
+      .update({
         nome_template,
         objetivo_template,
-      },
+        extensao_template,
+        motivo_invalidacao
+      })
+      .returning("*");
+
+    for (const campo of campos) {
+      await knex("BeaBa.campos")
+        .where({ referencia_template: id_template, id_campo: campo.id_campo })
+        .update({
+          nome_campo: campo.nome_campo,
+          tipo_dado_campo: campo.tipo_dado_campo,
+        });
+    }
+
+    res.status(200).json({
+      mensagem: "Template e campos atualizados com sucesso!",
+      template,
       status: 200,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
-      mensagem: error.message,
-      status: 500,
+      mensagem: err.message,
     });
   }
 };
