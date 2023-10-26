@@ -292,6 +292,47 @@ const ativarTemplate = async (req, res) => {
   }
 };
 
+const atualizarTemplate = async (req, res) => {
+  const { id_usuario, id_template } = req.params;
+
+  let {
+    nome_template,
+    objetivo_template,
+  } = req.body;
+
+  let urlImagem = '';
+
+  try {
+    const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
+
+    if (usuarios.length === 0) {
+      return res.status(404).send({
+        mensagem: "Usuário não encontrado",
+        status: 404,
+      });
+    }
+
+    await knex("BeaBa.templates").where({ id_template, referencia_usuario: id_usuario }).update({
+      nome_template,
+      objetivo_template,
+    });
+
+    res.status(200).send({
+      mensagem: "Template atualizado com sucesso!",
+      template: {
+        nome_template,
+        objetivo_template,
+      },
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+      status: 500,
+    });
+  }
+};
+
 const deletarTemplates = async (req, res) => {
   const { id_template } = req.params;
 
@@ -356,6 +397,7 @@ module.exports = {
   invalidarTemplate,
   pendenteTemplate,
   ativarTemplate,
+  atualizarTemplate,
   deletarTemplates,
   deletarCampos
 };

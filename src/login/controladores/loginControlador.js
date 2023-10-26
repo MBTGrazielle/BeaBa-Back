@@ -26,7 +26,7 @@ const login = async (req, res) => {
 
   try {
     const usuario = await knex("BeaBa.usuarios").where("email", email).first();
-    console.log(usuario)
+    
     if (!usuario) {
       return res.status(404).json({
         mensagem: "Dados inválidos",
