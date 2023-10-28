@@ -44,9 +44,9 @@ const login = async (req, res) => {
     }
 
     const chave = Buffer.from(usuario.chave, 'hex');
-    const iv = Buffer.from(usuario.iv, 'hex');
+    const iv = Buffer.from(usuario.iv, 'base64');
 
-    const decipher = crypto.createDecipheriv('aes-256-cbc', chave, iv);
+    const decipher = crypto.createDecipheriv('aes-128-cbc', chave, iv);
 
     const senhaCriptografadaBuffer = Buffer.from(usuario.senha, 'hex');
     let senhaDescriptografada = decipher.update(senhaCriptografadaBuffer);

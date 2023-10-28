@@ -44,12 +44,13 @@ const meuPerfil = async (req, res) => {
 
 const atualizarUsuarios = async (req, res) => {
   const { id_usuario } = req.params;
+
   let {
     nome_usuario,
     senha,
-    nome_area,
-    squad
   } = req.body;
+
+  let urlImagem = '';
 
   try {
     const usuarios = await knex("BeaBa.usuarios").where({ id_usuario });
@@ -63,11 +64,24 @@ const atualizarUsuarios = async (req, res) => {
 
     const usuario = usuarios[0];
     if (senha && senha !== usuario.senha) {
-      const hashedSenha = bcrypt.hashSync(senha, 10);
-      usuario.senha = hashedSenha;
+      const chave = usuario.chave;
+      const iv = crypto.randomBytes(16);
+
+      const cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(chave), iv);
+
+      let senhaCriptografada = cipher.update(senha, 'utf-8', 'hex');
+      senhaCriptografada += cipher.final('hex');
+
+
+      await knex("BeaBa.usuarios").where({ id_usuario }).update({
+        iv: iv.toString('base64'),
+        senha: senhaCriptografada,
+      });
+
+      usuario.senha = senhaCriptografada;
     }
 
-    const s3 = new S3Client(); // Criar uma instância do cliente S3
+    const s3 = new S3Client();
 
     if (req.file) {
       const imagem_perfil = req.file;
@@ -112,6 +126,13 @@ const atualizarUsuarios = async (req, res) => {
       usuario: {
         imagem_perfil: urlImagem,
         nome_usuario: nome_usuario,
+        email: email,
+        matricula: matricula,
+        tipo_acesso: tipo_acesso,
+        nome_area: nome_area,
+        cargo: cargo,
+        squad: squad,
+        equipe: equipe,
       },
       status: 200,
     });

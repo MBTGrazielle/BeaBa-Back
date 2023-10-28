@@ -115,11 +115,13 @@ const cadastrarUsuarios = async (req, res) => {
   let novaSenha = gerarSenhaAleatoria();
   let enviarSenha = novaSenha;
 
-  const chave = crypto.randomBytes(32);
+  const chave = crypto.randomBytes(16);
 
   const iv = crypto.randomBytes(16);
 
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(chave), iv);
+  const ivBase64 = iv.toString('base64');
+
+  const cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(chave), iv);
 
   let senhaCriptografada = cipher.update(novaSenha, 'utf-8', 'hex');
   senhaCriptografada += cipher.final('hex');
@@ -157,7 +159,7 @@ const cadastrarUsuarios = async (req, res) => {
         squad,
         equipe,
         chave,
-        iv,
+        iv: ivBase64,
         senha: senhaCriptografada,
       })
       .returning("*");
@@ -285,10 +287,25 @@ const atualizarUsuarios = async (req, res) => {
       });
     }
 
+
+
     const usuario = usuarios[0];
     if (senha && senha !== usuario.senha) {
-      const hashedSenha = bcrypt.hashSync(senha, 10);
-      usuario.senha = hashedSenha;
+      const chave = usuario.chave;
+      const iv = crypto.randomBytes(16);
+
+      const cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(chave), iv);
+
+      let senhaCriptografada = cipher.update(senha, 'utf-8', 'hex');
+      senhaCriptografada += cipher.final('hex');
+
+
+      await knex("BeaBa.usuarios").where({ id_usuario }).update({
+        iv: iv.toString('base64'),
+        senha: senhaCriptografada,
+      });
+
+      usuario.senha = senhaCriptografada;
     }
 
     const s3 = new S3Client();

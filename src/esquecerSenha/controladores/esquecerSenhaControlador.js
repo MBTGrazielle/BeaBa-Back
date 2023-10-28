@@ -1,6 +1,6 @@
 require("dotenv").config();
 const knex = require("../../db/conexao");
-const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const {
   transporter,
@@ -15,44 +15,52 @@ const esqueceuSenha = async (req, res) => {
     const usuario = await knex("BeaBa.usuarios").where({ email }).first();
 
     if (!usuario) {
-      return res
-        .status(404)
-        .json({ mensagem: "Usuário não encontrado.", status: 404 });
+      return res.status(404).json({ mensagem: "Usuário não encontrado.", status: 404 });
     }
 
-
     const novaSenha = gerarSenhaAleatoria();
+    const chave = crypto.randomBytes(16);
+    const iv = crypto.randomBytes(16);
 
+    const ivBase64 = iv.toString('base64');
 
-    const senhaCriptografada = await bcrypt.hash(novaSenha, 10);
+    const cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(chave), iv);
+
+    let senhaCriptografada = cipher.update(novaSenha, 'utf-8', 'hex');
+    senhaCriptografada += cipher.final('hex');
+
 
     await knex("BeaBa.usuarios")
       .where({ email })
-      .update({ senha: senhaCriptografada });
+      .update({
+        senha: senhaCriptografada,
+        chave,
+        iv: ivBase64,
+      });
 
     const emailHTML = `
-  <html>
-    <head>
-      <style>
-       img{
-        border-radius:50%;
-        width:15%
-       }
+      <html>
+        <head>
+          <style>
+            img {
+              border-radius: 50%;
+              width: 15%;
+            }
 
-       strong{
-        color:red
-       }
-      </style>
-    </head>
-    <body>
-    <h3>Segue a senha para utilização do Sistema de Gerenciamento Eletrônico de Templates <h3>
-    <p>Senha: <strong>${novaSenha}</strong></p>
-    <div class='logotipo'>
-    <a href="https://www.queroquero.com.br/"><img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49"></a>
-    </div>
-    </body>
-  </html>
-`;
+            strong {
+              color: red;
+            }
+          </style>
+        </head>
+        <body>
+          <h3>Segue a senha para utilização do Sistema de Gerenciamento Eletrônico de Templates</h3>
+          <p>Senha: <strong>${novaSenha}</strong></p>
+          <div class='logotipo'>
+            <a href="https://www.queroquero.com.br/"><img src="https://scontent-for1-1.xx.fbcdn.net/v/t1.6435-9/119046153_975871566219042_7137992106247695417_n.png?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gYbUgPmLOOAAX_r86uz&_nc_ht=scontent-for1-1.xx&oh=00_AfC3zj0rLQvjPM89pZEyjErxiYM818BqIXkMY3jeIRAW_A&oe=65355A49"></a>
+          </div>
+        </body>
+      </html>
+    `;
 
     // Enviar a nova senha para o e-mail do usuário
     await transporter.sendMail({
