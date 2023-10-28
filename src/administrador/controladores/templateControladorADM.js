@@ -1,7 +1,7 @@
 require("dotenv").config();
 const knex = require("../../db/conexao");
 const moment = require("moment");
-
+const removeAccents = require("remove-accents");
 
 const { transporter } = require("../../nodemailer/nodemailer");
 
@@ -111,23 +111,76 @@ const visualizarTemplates = async (req, res) => {
 };
 
 const statusTemplates = async (req, res) => {
-  const { status_template } = req.params
+  const { status_template, nome_area, squad } = req.params;
 
-  // const squad = req.params
   try {
-    const resultado = await knex("BeaBa.templates").where({ status_template });
+    const resultado = await knex("BeaBa.templates").where({ status_template, referencia_area: nome_area, referencia_squad: squad });
+
     if (resultado.length === 0) {
       return res.status(404).json({
-        mensagem: "Template não encontrado", resultado, status: 404
+        mensagem: "Nenhum template encontrado para o status e ID de usuário fornecidos.",
+        status: 404,
+        resultado: []
       });
     }
 
-    res.status(200).json({ mensagem: "Template por status encontrado", resultado, status: 200 });
+    return res.status(200).json({
+      mensagem: "Templates encontrados com sucesso.",
+      resultado: resultado,
+      status: 200,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       mensagem: "Erro ao buscar os templates.",
-      status: 500
+      status: 500,
+    });
+  }
+};
+
+const buscarTemplates = async (req, res) => {
+  const  parametros  = req.query;
+
+  try {
+    const templates = await knex('BeaBa.templates').select('*');
+
+    const templatesFiltrados = templates.filter(template => {
+      const matches = Object.entries(parametros).every(
+        ([chave, valorParametro]) => {
+          const valorTemplate = template[chave];
+
+          if (chave === 'extensao_template') {
+            return valorTemplate === valorParametro;
+          } else {
+            return (
+              valorTemplate &&
+              removeAccents(valorTemplate.toString().toLowerCase()).includes(
+                removeAccents(valorParametro.toString().toLowerCase())
+              )
+            );
+          }
+        }
+      );
+
+      return matches;
+    });
+
+    if (templatesFiltrados.length > 0) {
+      return res.status(200).json({
+        mensagem: `Encontramos ${templatesFiltrados.length} resultado${templatesFiltrados.length === 1 ? '' : 's'
+          }.`,
+        templatesFiltrados,
+        status: 200,
+      });
+    } else {
+      return res.status(404).json({
+        mensagem: 'Nenhum resultado foi encontrado para a sua busca.',
+        status: 404,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
     });
   }
 };
@@ -400,6 +453,7 @@ const deletarCampos = async (req, res) => {
 module.exports = {
   cadastrarTemplates,
   statusTemplates,
+  buscarTemplates,
   visualizarTemplates,
   cadastrarCampos,
   inativarTemplate,

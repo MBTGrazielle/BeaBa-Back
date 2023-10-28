@@ -14,15 +14,17 @@ const {
   deletarCampos,
   invalidarTemplate,
   pendenteTemplate,
-  atualizarTemplate
+  atualizarTemplate,
+  buscarTemplates
 } = require('../../administrador/controladores/templateControladorADM');
 
 const { checkAuth } = require('../../middlewares/authADM');
 
 const rota = Router();
 
-rota.get('/adm/templates/:status_template', statusTemplates)
+rota.get('/adm/templates/:status_template/:nome_area/:squad', statusTemplates)
 rota.get('/adm/visualizar/:id_template', visualizarTemplates)
+rota.get('/adm/buscarTemplates/:nome_area/:squad', buscarTemplates)
 rota.post('/adm/cadastrarTemplate/:id_usuario', cadastrarTemplates);
 rota.post('/adm/cadastrarCampo/:id_template', cadastrarCampos);
 rota.patch('/adm/inativarTemplate/:id_template', inativarTemplate);

@@ -111,23 +111,29 @@ const visualizarTemplates = async (req, res) => {
 };
 
 const statusTemplates = async (req, res) => {
-  const { status_template } = req.params
+  const { status_template, id_usuario } = req.params;
 
-  // const squad = req.params
   try {
-    const resultado = await knex("BeaBa.templates").where({ status_template });
+    const resultado = await knex("BeaBa.templates").where({ status_template, referencia_usuario: id_usuario });
+
     if (resultado.length === 0) {
       return res.status(404).json({
-        mensagem: "Template não encontrado", resultado, status: 404
+        mensagem: "Nenhum template encontrado para o status e ID de usuário fornecidos.",
+        status: 404,
+        resultado: []
       });
     }
 
-    res.status(200).json({ mensagem: "Template por status encontrado", resultado, status: 200 });
+    return res.status(200).json({
+      mensagem: "Templates encontrados com sucesso.",
+      resultado: resultado,
+      status: 200,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       mensagem: "Erro ao buscar os templates.",
-      status: 500
+      status: 500,
     });
   }
 };
