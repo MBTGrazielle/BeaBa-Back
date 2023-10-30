@@ -93,6 +93,7 @@ const visualizarTemplates = async (req, res) => {
     const camposEtipos = {};
     resultadoCampos.forEach((campo, index) => {
       camposEtipos[`${index + 1}`] = {
+        id: campo.id_campo,
         nome: campo.nome_campo,
         tipo: campo.tipo_dado_campo,
       };
@@ -139,28 +140,29 @@ const statusTemplates = async (req, res) => {
 };
 
 const buscarTemplates = async (req, res) => {
-  const  parametros  = req.query;
+  const { nome_area, squad, status_template } = req.params;
+  const parametros = req.query;
 
   try {
-    const templates = await knex('BeaBa.templates').select('*');
+    const templates = await knex('BeaBa.templates')
+      .select('*')
+      .where({ referencia_area: nome_area, referencia_squad: squad, status_template });
 
-    const templatesFiltrados = templates.filter(template => {
-      const matches = Object.entries(parametros).every(
-        ([chave, valorParametro]) => {
-          const valorTemplate = template[chave];
+    const templatesFiltrados = templates.filter((template) => {
+      const matches = Object.entries(parametros).every(([chave, valorParametro]) => {
+        const valorTemplate = template[chave];
 
-          if (chave === 'extensao_template') {
-            return valorTemplate === valorParametro;
-          } else {
-            return (
-              valorTemplate &&
-              removeAccents(valorTemplate.toString().toLowerCase()).includes(
-                removeAccents(valorParametro.toString().toLowerCase())
-              )
-            );
-          }
+        if (chave === 'extensao_template') {
+          return valorTemplate === valorParametro;
+        } else {
+          return (
+            valorTemplate &&
+            removeAccents(valorTemplate.toString().toLowerCase()).includes(
+              removeAccents(valorParametro.toString().toLowerCase())
+            )
+          );
         }
-      );
+      });
 
       return matches;
     });

@@ -24,7 +24,7 @@ const rota = Router();
 
 rota.get('/adm/templates/:status_template/:nome_area/:squad', statusTemplates)
 rota.get('/adm/visualizar/:id_template', visualizarTemplates)
-rota.get('/adm/buscarTemplates/:nome_area/:squad', buscarTemplates)
+rota.get('/adm/buscarTemplates/:nome_area/:squad/:status_template', buscarTemplates)
 rota.post('/adm/cadastrarTemplate/:id_usuario', cadastrarTemplates);
 rota.post('/adm/cadastrarCampo/:id_template', cadastrarCampos);
 rota.patch('/adm/inativarTemplate/:id_template', inativarTemplate);
