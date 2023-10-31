@@ -59,7 +59,7 @@ const cadastrarTemplates = async (req, res) => {
         motivo_invalidacao
       })
       .returning("*");
-    console.log(template)
+
     res.status(201).json({
       mensagem: "Cadastro realizado com sucesso!",
       template,
@@ -113,14 +113,14 @@ const visualizarTemplates = async (req, res) => {
 };
 
 const statusTemplates = async (req, res) => {
-  const { status_template, nome_area, squad } = req.params;
+  const { status_template, nome_area } = req.params;
 
   try {
-    const resultado = await knex("BeaBa.templates").where({ status_template, referencia_area: nome_area, referencia_squad: squad });
+    const resultado = await knex("BeaBa.templates").where({ status_template, referencia_area: nome_area });
 
     if (resultado.length === 0) {
       return res.status(404).json({
-        mensagem: "Nenhum template encontrado para o status e ID de usuário fornecidos.",
+        mensagem: "Nenhum template encontrado para a sua busca.",
         status: 404,
         resultado: []
       });
@@ -141,13 +141,13 @@ const statusTemplates = async (req, res) => {
 };
 
 const buscarTemplates = async (req, res) => {
-  const { nome_area, squad, status_template } = req.params;
+  const { nome_area, status_template } = req.params;
   const parametros = req.query;
 
   try {
     const templates = await knex('BeaBa.templates')
       .select('*')
-      .where({ referencia_area: nome_area, referencia_squad: squad, status_template });
+      .where({ referencia_area: nome_area, status_template });
 
     const templatesFiltrados = templates.filter((template) => {
       const matches = Object.entries(parametros).every(([chave, valorParametro]) => {

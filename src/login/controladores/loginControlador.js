@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const SECRETADM = process.env.SECRETADM;
 const SECRETCAD = process.env.SECRETCAD;
+const SECRETMAS = process.env.SECRETMAS;
 
 const login = async (req, res) => {
   const { email, senha } = req.body;
@@ -58,6 +59,8 @@ const login = async (req, res) => {
       let token;
       if (usuario.tipo_acesso === "Administrador") {
         token = jwt.sign({ email: usuario.email }, SECRETADM);
+      } else if (usuario.tipo_acesso === "Master") {
+        token = jwt.sign({ email: usuario.email }, SECRETMAS);
       } else if (usuario.tipo_acesso === "Cadastrador") {
         token = jwt.sign({ email: usuario.email }, SECRETCAD);
       }

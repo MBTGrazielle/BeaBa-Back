@@ -1,6 +1,7 @@
 require("dotenv").config();
 const knex = require("../../db/conexao");
 const moment = require("moment");
+const removeAccents = require("remove-accents");
 
 
 const { transporter } = require("../../nodemailer/nodemailer");
@@ -46,6 +47,7 @@ const cadastrarTemplates = async (req, res) => {
 
     const template = await knex("BeaBa.templates")
       .insert({
+        referencia_email: usuario[0].email,
         referencia_usuario: id_usuario,
         referencia_nome: usuario[0].nome_usuario,
         referencia_squad: usuario[0].squad,
@@ -93,11 +95,13 @@ const visualizarTemplates = async (req, res) => {
     const camposEtipos = {};
     resultadoCampos.forEach((campo, index) => {
       camposEtipos[`${index + 1}`] = {
+        id: campo.id_campo,
         nome: campo.nome_campo,
         tipo: campo.tipo_dado_campo,
       };
     });
 
+    console.log(camposEtipos)
     res.status(200).json({
       resultadoTemplates,
       camposEtipos,
@@ -106,6 +110,54 @@ const visualizarTemplates = async (req, res) => {
     console.error(error);
     res.status(500).json({
       mensagem: "Erro ao buscar os templates.",
+    });
+  }
+};
+
+const buscarTemplates = async (req, res) => {
+  const { id_usuario, status_template } = req.params;
+  const parametros = req.query;
+
+  try {
+    const templates = await knex('BeaBa.templates')
+      .select('*')
+      .where({ referencia_usuario: id_usuario, status_template });
+
+    const templatesFiltrados = templates.filter((template) => {
+      const matches = Object.entries(parametros).every(([chave, valorParametro]) => {
+        const valorTemplate = template[chave];
+
+        if (chave === 'extensao_template') {
+          return valorTemplate === valorParametro;
+        } else {
+          return (
+            valorTemplate &&
+            removeAccents(valorTemplate.toString().toLowerCase()).includes(
+              removeAccents(valorParametro.toString().toLowerCase())
+            )
+          );
+        }
+      });
+
+      return matches;
+    });
+
+    if (templatesFiltrados.length > 0) {
+      return res.status(200).json({
+        mensagem: `Encontramos ${templatesFiltrados.length} resultado${templatesFiltrados.length === 1 ? '' : 's'
+          }.`,
+        templatesFiltrados,
+        status: 200,
+      });
+    } else {
+      return res.status(404).json({
+        mensagem: 'Nenhum resultado foi encontrado para a sua busca.',
+        status: 404,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
     });
   }
 };
@@ -178,6 +230,56 @@ const cadastrarCampos = async (req, res) => {
   }
 };
 
+const atualizarTemplate = async (req, res) => {
+  const { id_template } = req.params;
+  const { nome_template, objetivo_template, extensao_template, motivo_invalidacao, campos } = req.body;
+
+  if (!nome_template || nome_template.length < 3) {
+    return res.status(400).json({
+      mensagem: "O nome do template é obrigatório",
+      status: 400
+    });
+  }
+
+  if (!objetivo_template || objetivo_template.length < 4) {
+    return res.status(400).json({
+      mensagem: "O objetivo do template é obrigatório",
+      status: 400
+    });
+  }
+
+  try {
+    const template = await knex("BeaBa.templates")
+      .where({ id_template })
+      .update({
+        nome_template,
+        objetivo_template,
+        extensao_template,
+        motivo_invalidacao
+      })
+      .returning("*");
+
+    for (const campo of campos) {
+      await knex("BeaBa.campos")
+        .where({ referencia_template: id_template, id_campo: campo.id_campo })
+        .update({
+          nome_campo: campo.nome_campo,
+          tipo_dado_campo: campo.tipo_dado_campo,
+        });
+    }
+
+    res.status(200).json({
+      mensagem: "Template e campos atualizados com sucesso!",
+      template,
+      status: 200,
+    });
+  } catch (err) {
+    res.status(500).json({
+      mensagem: err.message,
+    });
+  }
+};
+
 const deletarTemplates = async (req, res) => {
   const { id_template } = req.params;
 
@@ -239,5 +341,7 @@ module.exports = {
   visualizarTemplates,
   cadastrarCampos,
   deletarTemplates,
+  buscarTemplates,
+  atualizarTemplate,
   deletarCampos
 };
