@@ -40,6 +40,8 @@ const cadastrarTemplates = async (req, res) => {
 
     } else if (usuario[0].tipo_acesso === "Cadastrador") {
       status_template = "Pendente";
+    } else if (usuario[0].tipo_acesso === "Master") {
+      status_template = "Ativo";
     }
 
     const data_criacao_template = moment().format("YYYY-MM-DD HH:mm:ss");

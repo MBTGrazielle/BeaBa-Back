@@ -9,6 +9,8 @@ const rotasUsuariosMAS = require('./master/rotas/rotasUsuariosMAS');
 const rotasTemplatesCAD = require('./cadastrador/rotas/rotasTemplatesCAD');
 const rotasUsuariosCAD = require('./cadastrador/rotas/rotasUsuariosCAD');
 
+const rotasUploadsADM = require('./administrador/rotas/rotasUploadsADM');
+
 const loginUsuarios = require('./login/rotas/rotaLoginUsuarios')
 
 const esquecerSenha = require('./esquecerSenha/rotas/esquecerSenha')
@@ -28,6 +30,8 @@ app.use(rotasUsuariosCAD);
 
 app.use(rotasTemplatesMAS);
 app.use(rotasUsuariosMAS);
+
+app.use(rotasUploadsADM)
 
 app.use(loginUsuarios)
 
