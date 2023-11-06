@@ -115,13 +115,13 @@ const visualizarTemplates = async (req, res) => {
 };
 
 const buscarTemplates = async (req, res) => {
-  const { id_usuario, status_template } = req.params;
+  const { nome_area, squad, status_template } = req.params;
   const parametros = req.query;
 
   try {
     const templates = await knex('BeaBa.templates')
       .select('*')
-      .where({ referencia_usuario: id_usuario, status_template });
+      .where({ referencia_area: nome_area, referencia_squad: squad, status_template });
 
     const templatesFiltrados = templates.filter((template) => {
       const matches = Object.entries(parametros).every(([chave, valorParametro]) => {
@@ -163,10 +163,10 @@ const buscarTemplates = async (req, res) => {
 };
 
 const statusTemplates = async (req, res) => {
-  const { status_template, id_usuario } = req.params;
+  const { status_template, nome_area, squad } = req.params;
 
   try {
-    const resultado = await knex("BeaBa.templates").where({ status_template, referencia_usuario: id_usuario });
+    const resultado = await knex("BeaBa.templates").where({ status_template, referencia_area: nome_area, referencia_squad: squad });
 
     if (resultado.length === 0) {
       return res.status(404).json({
