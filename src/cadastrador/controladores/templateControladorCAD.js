@@ -162,6 +162,54 @@ const buscarTemplates = async (req, res) => {
   }
 };
 
+const buscarTemplatesPendentes = async (req, res) => {
+  const { id_usuario, status_template } = req.params;
+  const parametros = req.query;
+
+  try {
+    const templates = await knex('BeaBa.templates')
+      .select('*')
+      .where({ referencia_usuario: id_usuario, status_template });
+
+    const templatesFiltrados = templates.filter((template) => {
+      const matches = Object.entries(parametros).every(([chave, valorParametro]) => {
+        const valorTemplate = template[chave];
+
+        if (chave === 'extensao_template') {
+          return valorTemplate === valorParametro;
+        } else {
+          return (
+            valorTemplate &&
+            removeAccents(valorTemplate.toString().toLowerCase()).includes(
+              removeAccents(valorParametro.toString().toLowerCase())
+            )
+          );
+        }
+      });
+
+      return matches;
+    });
+
+    if (templatesFiltrados.length > 0) {
+      return res.status(200).json({
+        mensagem: `Encontramos ${templatesFiltrados.length} resultado${templatesFiltrados.length === 1 ? '' : 's'
+          }.`,
+        templatesFiltrados,
+        status: 200,
+      });
+    } else {
+      return res.status(404).json({
+        mensagem: 'Nenhum resultado foi encontrado para a sua busca.',
+        status: 404,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      mensagem: error.message,
+    });
+  }
+};
+
 const statusTemplates = async (req, res) => {
   const { status_template, nome_area, squad } = req.params;
 
@@ -339,6 +387,7 @@ module.exports = {
   cadastrarTemplates,
   statusTemplates,
   visualizarTemplates,
+  buscarTemplatesPendentes,
   cadastrarCampos,
   deletarTemplates,
   buscarTemplates,
