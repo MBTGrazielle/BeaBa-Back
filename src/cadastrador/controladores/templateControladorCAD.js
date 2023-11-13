@@ -101,7 +101,7 @@ const visualizarTemplates = async (req, res) => {
       };
     });
 
-    console.log(camposEtipos)
+    
     res.status(200).json({
       resultadoTemplates,
       camposEtipos,

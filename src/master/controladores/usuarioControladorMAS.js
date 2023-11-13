@@ -131,7 +131,7 @@ const cadastrarUsuarios = async (req, res) => {
   if (imagem_perfil) {
     const nomeImagem = uuidv4();
 
-    const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
+    const caminhoImagem = `img-perfil/${nome_area}/${squad}/${nomeImagem}.${imagem_perfil.originalname
       .split(".")
       .pop()}`;
 
@@ -314,7 +314,7 @@ const atualizarUsuarios = async (req, res) => {
       const imagem_perfil = req.file;
 
       const nomeImagem = uuidv4();
-      const caminhoImagem = `${nome_area}/${squad}/img-perfil/${nomeImagem}.${imagem_perfil.originalname
+      const caminhoImagem = `img-perfil/${nome_area}/${squad}/${nomeImagem}.${imagem_perfil.originalname
         .split(".")
         .pop()}`;
       const params = {
@@ -327,7 +327,7 @@ const atualizarUsuarios = async (req, res) => {
 
       if (usuario.imagem_perfil) {
         const nomeImagemAntiga = usuario.imagem_perfil.split("/").pop();
-        const caminhoImagemAntiga = `${nome_area}/${squad}/img-perfil/${nomeImagemAntiga}`;
+        const caminhoImagemAntiga = `img-perfil/${nome_area}/${squad}/${nomeImagemAntiga}`;
 
         const paramsAntigos = {
           Bucket: process.env.AWS_BUCKET_NAME,
@@ -396,7 +396,7 @@ const deletarUsuarios = async (req, res) => {
       const nomeImagem = usuario.imagem_perfil.split("/").pop();
 
       // Construir o caminho correto para a imagem no S3
-      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/img-perfil/${nomeImagem}`;
+      const caminhoImagem = `img-perfil/${usuario.nome_area}/${usuario.squad}/${nomeImagem}`;
 
       // Configurar os parâmetros de exclusão no S3
       const params = {
@@ -442,7 +442,7 @@ const deletarImagemPerfil = async (req, res) => {
       const nomeImagem = usuario.imagem_perfil.split("/").pop();
 
       // Construir o caminho correto para a imagem no S3
-      const caminhoImagem = `${usuario.nome_area}/${usuario.squad}/img-perfil/${nomeImagem}`;
+      const caminhoImagem = `img-perfil/${usuario.nome_area}/${usuario.squad}/${nomeImagem}`;
 
       // Configurar os parâmetros de exclusão no S3
       const params = {

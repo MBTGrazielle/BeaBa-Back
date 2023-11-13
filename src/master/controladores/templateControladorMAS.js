@@ -279,7 +279,7 @@ const invalidarTemplate = async (req, res) => {
 
   try {
     const templates = await knex("BeaBa.templates").where({ id_template });
-    console.log(templates)
+    
     if (templates.length === 0) {
       return res.status(404).json({
         mensagem: 'Template não encontrado',

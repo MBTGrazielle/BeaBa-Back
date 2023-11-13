@@ -61,7 +61,7 @@ const cadastrarTemplates = async (req, res) => {
         motivo_invalidacao
       })
       .returning("*");
-    console.log(template)
+
     res.status(201).json({
       mensagem: "Cadastro realizado com sucesso!",
       template,
@@ -141,6 +141,38 @@ const statusTemplates = async (req, res) => {
     });
   }
 };
+
+const verTabelaUploads = async (req, res) => {
+  const { referencia_usuario } = req.params;
+
+  try {
+    const resultadoCampos = await knex("BeaBa.uploads")
+      .where({ referencia_usuario: referencia_usuario })
+      .select('*');
+
+    const usuario = await knex("BeaBa.usuarios")
+      .where({ id_usuario: referencia_usuario })
+      .select('*');
+
+    if (usuario.length === 0) {
+      return res.status(404).json({ status: 404, mensagem: "Usuário não encontrado." });
+    }
+
+    if (resultadoCampos.length === 0) {
+      return res.status(404).json({ status: 404, mensagem: "Nenhum arquivo encontrado para o usuário." });
+    }
+
+    res.status(200).json({ usuario: usuario[0], uploads: resultadoCampos });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensagem: "Erro ao buscar as informações do usuário e os uploads.",
+    });
+  }
+}
+
+
 
 const buscarTemplates = async (req, res) => {
   const { nome_area, squad, status_template } = req.params;
@@ -468,5 +500,6 @@ module.exports = {
   ativarTemplate,
   atualizarTemplate,
   deletarTemplates,
-  deletarCampos
+  deletarCampos,
+  verTabelaUploads
 };
