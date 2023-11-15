@@ -119,7 +119,7 @@ const statusTemplates = async (req, res) => {
 
   try {
     const resultado = await knex("BeaBa.templates").where({ status_template, referencia_area: nome_area, referencia_squad: squad });
-
+    console.log(resultado)
     if (resultado.length === 0) {
       return res.status(404).json({
         mensagem: "Nenhum template encontrado para o status e ID de usuário fornecidos.",
@@ -143,26 +143,27 @@ const statusTemplates = async (req, res) => {
 };
 
 const verTabelaUploads = async (req, res) => {
-  const { referencia_usuario } = req.params;
+  const { squad } = req.params;
 
   try {
     const resultadoCampos = await knex("BeaBa.uploads")
-      .where({ referencia_usuario: referencia_usuario })
-      .select('*');
-
-    const usuario = await knex("BeaBa.usuarios")
-      .where({ id_usuario: referencia_usuario })
-      .select('*');
-
-    if (usuario.length === 0) {
-      return res.status(404).json({ status: 404, mensagem: "Usuário não encontrado." });
-    }
+      .where({ referencia_squad: squad })
+      .select(
+        'id_upload',
+        'data_criacao_upload',
+        'nome_upload',
+        'caminho_upload',
+        'referencia_template',
+        'referencia_usuario',
+        'referencia_nome',
+        'diretorio'
+      );
 
     if (resultadoCampos.length === 0) {
       return res.status(404).json({ status: 404, mensagem: "Nenhum arquivo encontrado para o usuário." });
     }
 
-    res.status(200).json({ usuario: usuario[0], uploads: resultadoCampos });
+    res.status(200).json({ uploads: resultadoCampos });
 
   } catch (error) {
     console.error(error);
@@ -171,8 +172,6 @@ const verTabelaUploads = async (req, res) => {
     });
   }
 }
-
-
 
 const buscarTemplates = async (req, res) => {
   const { nome_area, squad, status_template } = req.params;

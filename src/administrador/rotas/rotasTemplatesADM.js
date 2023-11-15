@@ -23,7 +23,7 @@ const { checkAuth } = require('../../middlewares/authADM');
 const rota = Router();
 
 rota.get('/adm/templates/:status_template/:nome_area/:squad', statusTemplates)
-rota.get('/adm/verTabelas/:referencia_usuario', verTabelaUploads)
+rota.get('/adm/verTabelas/:squad', verTabelaUploads)
 rota.get('/adm/visualizar/:id_template', visualizarTemplates)
 rota.get('/adm/buscarTemplates/:nome_area/:squad/:status_template', buscarTemplates)
 rota.post('/adm/cadastrarTemplate/:id_usuario', cadastrarTemplates);

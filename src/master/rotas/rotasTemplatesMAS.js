@@ -15,7 +15,8 @@ const {
   invalidarTemplate,
   pendenteTemplate,
   atualizarTemplate,
-  buscarTemplates
+  buscarTemplates,
+  verTabelaUploads
 } = require('../../master/controladores/templateControladorMAS');
 
 const { checkAuth } = require('../../middlewares/authADM');
@@ -24,6 +25,7 @@ const rota = Router();
 
 rota.get('/master/templates/:status_template/:nome_area', statusTemplates)
 rota.get('/master/visualizar/:id_template', visualizarTemplates)
+rota.get('/master/verTabelas/:nome_area', verTabelaUploads)
 rota.get('/master/buscarTemplates/:nome_area/:status_template', buscarTemplates)
 rota.post('/master/cadastrarTemplate/:id_usuario', cadastrarTemplates);
 rota.post('/master/cadastrarCampo/:id_template', cadastrarCampos);

@@ -101,7 +101,7 @@ const visualizarTemplates = async (req, res) => {
       };
     });
 
-    
+
     res.status(200).json({
       resultadoTemplates,
       camposEtipos,
@@ -113,6 +113,35 @@ const visualizarTemplates = async (req, res) => {
     });
   }
 };
+
+const verTabelaUploads = async (req, res) => {
+  const { id_usuario } = req.params;
+
+  try {
+    const resultadoCampos = await knex("BeaBa.uploads")
+      .where({ referencia_usuario: id_usuario })
+      .select(
+        'id_upload',
+        'data_criacao_upload',
+        'nome_upload',
+        'caminho_upload',
+        'referencia_template',
+        'diretorio'
+      );
+
+    if (resultadoCampos.length === 0) {
+      return res.status(404).json({ status: 404, mensagem: "Nenhum arquivo encontrado para o usuário." });
+    }
+
+    res.status(200).json({ uploads: resultadoCampos });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensagem: "Erro ao buscar as informações do usuário e os uploads.",
+    });
+  }
+}
 
 const buscarTemplates = async (req, res) => {
   const { nome_area, squad, status_template } = req.params;
@@ -392,5 +421,6 @@ module.exports = {
   deletarTemplates,
   buscarTemplates,
   atualizarTemplate,
-  deletarCampos
+  deletarCampos,
+  verTabelaUploads
 };

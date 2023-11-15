@@ -190,6 +190,37 @@ const buscarTemplates = async (req, res) => {
   }
 };
 
+const verTabelaUploads = async (req, res) => {
+  const { nome_area } = req.params;
+
+  try {
+    const resultadoCampos = await knex("BeaBa.uploads")
+      .where({ referencia_area: nome_area })
+      .select(
+        'id_upload',
+        'data_criacao_upload',
+        'nome_upload',
+        'caminho_upload',
+        'referencia_template',
+        'referencia_usuario',
+        'referencia_nome',
+        'referencia_squad',
+        'diretorio'
+      );
+    if (resultadoCampos.length === 0) {
+      return res.status(404).json({ status: 404, mensagem: "Nenhum arquivo encontrado para o usuário." });
+    }
+
+    res.status(200).json({ uploads: resultadoCampos });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensagem: "Erro ao buscar as informações do usuário e os uploads.",
+    });
+  }
+}
+
 const cadastrarCampos = async (req, res) => {
   const { id_template } = req.params;
 
@@ -279,7 +310,7 @@ const invalidarTemplate = async (req, res) => {
 
   try {
     const templates = await knex("BeaBa.templates").where({ id_template });
-    
+
     if (templates.length === 0) {
       return res.status(404).json({
         mensagem: 'Template não encontrado',
@@ -465,6 +496,7 @@ module.exports = {
   inativarTemplate,
   invalidarTemplate,
   pendenteTemplate,
+  verTabelaUploads,
   ativarTemplate,
   atualizarTemplate,
   deletarTemplates,
