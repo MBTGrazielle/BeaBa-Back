@@ -1,6 +1,5 @@
 require("dotenv").config();
 const knex = require("../../db/conexao");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const removeAccents = require("remove-accents");
 
